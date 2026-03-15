@@ -2,6 +2,10 @@
   "version": 2,
   "rewrites": [
     {
+      "source": "/admin",
+      "destination": "/backend/index.html"
+    },
+    {
       "source": "/(products|upload|login|products/:id)",
       "destination": "/api/index.js"
     },
