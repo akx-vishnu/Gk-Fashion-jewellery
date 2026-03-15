@@ -89,7 +89,10 @@ app.post('/upload', upload.single('image'), async (req, res, next) => {
         upsert: false
       });
 
-    if (uploadError) throw uploadError;
+    if (uploadError) {
+      console.error('Supabase Storage Error:', uploadError);
+      throw uploadError;
+    }
 
     // 2. Get Public URL
     const { data: { publicUrl } } = supabase.storage
@@ -104,9 +107,13 @@ app.post('/upload', upload.single('image'), async (req, res, next) => {
       ])
       .select();
 
-    if (dbError) throw dbError;
+    if (dbError) {
+      console.error('Supabase DB Error:', dbError);
+      throw dbError;
+    }
     res.json({ message: 'Product uploaded successfully!', product: dbData[0] });
   } catch (err) {
+    console.error('Upload Process Caught Error:', err);
     next(err);
   }
 });

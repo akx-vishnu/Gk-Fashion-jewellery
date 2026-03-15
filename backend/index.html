@@ -390,15 +390,17 @@
 
       try {
         const response = await fetch(`${API_BASE}/upload`, { method: 'POST', body: formData });
+        const result = await response.json();
+        
         if (response.ok) {
           uploadForm.reset();
           fetchInventory();
           alert("Product Published Successfully!");
         } else {
-          alert("Upload failed.");
+          alert(`Upload failed: ${result.message || result.error || 'Check server logs'}`);
         }
       } catch (err) {
-        alert("A network error occurred.");
+        alert("A network error occurred. Please check your connection.");
       } finally {
         submitBtn.innerText = "PUBLISH PRODUCT";
         submitBtn.disabled = false;
