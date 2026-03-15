@@ -1,23 +1,24 @@
 # GK Fashion Jewellery - Elegant Artificial Jewellery
 
-A premium, high-performance e-commerce web application for artificial jewellery. This project features a modern UI, a fully functional shopping cart with WhatsApp integration, and a secure administrative backend for product management.
+A premium, high-performance e-commerce web application for artificial jewellery. This project features a modern UI with a luxurious gold theme, a fully functional shopping cart with WhatsApp integration, and a secure administrative backend for product management.
 
 > [!IMPORTANT]
 > **Project Description (for GitHub):**
-> A modern, responsive e-commerce platform for premium artificial jewellery. Built with a Node.js/Express backend and a vanilla JS frontend, it features automated WhatsApp quote generation, a secure Supabase-powered product gallery, and 100% mobile optimization. Designed for elegance and seamless user experience. (338 characters)
+> A modern, responsive e-commerce platform for premium artificial jewellery. Built with a Node.js/Express backend and a vanilla JS frontend, it features automated WhatsApp quote generation, a secure Supabase-powered product gallery, and 100% mobile optimization. Designed for elegance and seamless user experience.
 
 ## ✨ Key Features
 
-- **💎 Premium UI/UX**: Enhanced Rose Gold & Gold aesthetic with Playfair Display typography, smooth animations, and glassmorphism elements.
-- **📱 Advanced Mobile-First Design**: Fully optimized mobile navigation with a blurred overlay menu and a responsive 2-column product grid.
-- **🛒 Smart Shopping Cart**: Real-time total calculation with persistent localStorage state.
-- **📲 WhatsApp Checkout**: Generates detailed itemized quotes sent directly to `+91 94962 02159`.
-- **🛠️ Admin Dashboard**: Secure interface for product management with cloud-based Supabase image storage.
-- **🚀 Optimized Performance**: Refined CSS with centralized design tokens and zero layout shifts.
+- **💎 Premium UI/UX**: Luxurious Gold (`#C9A84C`) theme with Playfair Display typography, smooth animations, and warm hero overlays.
+- **📱 Advanced Mobile-First Design**: Fully optimized responsive layout with hamburger navigation, `100svh` hero, 2-column product grid, and small-phone breakpoint support.
+- **🛒 Smart Shopping Cart**: Real-time total calculation with persistent localStorage state and automatic product sync.
+- **📲 WhatsApp Checkout**: Generates detailed itemized quotes sent directly to `+91 94877 24818`.
+- **🛠️ Admin Dashboard**: Secure interface for product management (name, price, category, description) with cloud-based Supabase image storage.
+- **🎨 Polished Interactions**: Gold hover underline animations on nav links, gradient hero-to-section fade, custom animated cursor, and toast notifications.
+- **🚀 Optimized Performance**: Refined CSS with centralized design tokens, zero layout shifts, and SEO-friendly structure.
 
 ## 🛠️ Technology Stack
 
-- **Frontend**: HTML5, CSS3 (Custom Tokens), JavaScript (ES6+)
+- **Frontend**: HTML5, CSS3 (Custom Properties / Design Tokens), JavaScript (ES6+)
 - **Backend**: Node.js, Express.js (Serverless Ready)
 - **Database**: Supabase (PostgreSQL)
 - **Storage**: Supabase Storage Buckets
@@ -31,13 +32,13 @@ A premium, high-performance e-commerce web application for artificial jewellery.
 
 ### 2. Installation
 ```bash
-git clone https://github.com/your-username/gk-fashion-jewellery.git
-cd gk-fashion-jewellery/backend
+git clone https://github.com/akx-vishnu/Gk-Fashion-jewellery.git
+cd Gk-Fashion-jewellery/backend
 npm install
 ```
 
 ### 3. Environment Variables
-Create a `.env` file in the `backend/` directory based on `.env.example`:
+Create a `.env` file in the `backend/` directory:
 ```env
 SUPABASE_URL=your_project_url
 SUPABASE_ANON_KEY=your_anon_key
@@ -54,6 +55,7 @@ create table products (
   name text not null,
   price numeric not null,
   category text,
+  description text,
   image text
 );
 ```
@@ -64,7 +66,7 @@ Create a **Public** storage bucket named `product-images`.
 # In the backend folder
 npm start
 ```
-Then simply open `index.html` in your browser.
+Then open `index.html` in your browser, or visit `http://localhost:5000`.
 
 ## ☁️ Deployment
 
@@ -74,9 +76,20 @@ Then simply open `index.html` in your browser.
 3. In Vercel Project Settings, add all variables from your `.env` to the **Environment Variables** section.
 4. Deploy!
 
+## 📦 Dependencies
+
+| Package | Purpose |
+|---------|---------|
+| `express` | Web server framework |
+| `@supabase/supabase-js` | Database & storage client |
+| `multer` | Image upload handling |
+| `cors` | Cross-origin resource sharing |
+| `helmet` | Security headers |
+| `express-rate-limit` | API rate limiting |
+| `dotenv` | Environment variable management |
+
 ## 📄 License
 This project is licensed under the ISC License.
 
 ---
 *Crafted for GK Fashion Jewellery. All rights reserved.*
-
