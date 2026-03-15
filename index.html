@@ -107,6 +107,20 @@
             }
         }
 
+        function showToast(message, duration = 3000) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<span class="toast-message">${message}</span>`;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('removing');
+                toast.addEventListener('animationend', () => toast.remove());
+            }, duration);
+        }
+
         async function toggleCart() {
             const modal = document.getElementById('cart-modal');
             const isFlex = modal.style.display === 'flex';
@@ -141,7 +155,7 @@
             if (cart.length !== initialCartLength) {
                 updateCartCount();
                 const names = removedItems.map(i => i.name).join(', ');
-                alert(`Some items were removed from your cart as they are no longer available: ${names}`);
+                showToast(`Unavailable items removed: ${names}`);
             }
         }
 
@@ -154,7 +168,7 @@
             }
             
             updateCartCount();
-            alert(`${name} added to cart!`);
+            showToast(`${name} added to cart!`);
         }
 
         function removeFromCart(index) {
@@ -214,7 +228,7 @@
 
         async function checkoutWhatsApp() {
             if (cart.length === 0) {
-                alert("Your cart is empty!");
+                showToast("Your cart is empty!");
                 return;
             }
 
@@ -277,6 +291,9 @@
         fetchProducts();
         updateCartCount();
     </script>
+
+    <!-- Custom Alert Components -->
+    <div id="toast-container"></div>
 
     <section id="why-us" class="why-us">
         <div class="container">
