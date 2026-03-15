@@ -8,12 +8,12 @@ A premium, high-performance e-commerce web application for artificial jewellery.
 
 ## ✨ Key Features
 
-- **💎 Premium UI/UX**: Modern design with glassmorphism effects, smooth animations, and a sleek dark/light theme.
-- **📱 Mobile-First Design**: 100% responsive across all devices, from small smartphones to large desktops.
-- **🛒 Smart Shopping Cart**: Real-time total calculation and persistent state.
-- **📲 WhatsApp Checkout**: Generates detailed itemized quotes sent directly to the store's WhatsApp.
-- **🛠️ Admin Dashboard**: Secure interface for adding and deleting products with cloud-based image storage.
-- **🚀 Cloud Integration**: Powered by Supabase for high-performance data storage and asset management.
+- **💎 Premium UI/UX**: Enhanced Rose Gold & Gold aesthetic with Playfair Display typography, smooth animations, and glassmorphism elements.
+- **📱 Advanced Mobile-First Design**: Fully optimized mobile navigation with a blurred overlay menu and a responsive 2-column product grid.
+- **🛒 Smart Shopping Cart**: Real-time total calculation with persistent localStorage state.
+- **📲 WhatsApp Checkout**: Generates detailed itemized quotes sent directly to `+91 94962 02159`.
+- **🛠️ Admin Dashboard**: Secure interface for product management with cloud-based Supabase image storage.
+- **🚀 Optimized Performance**: Refined CSS with centralized design tokens and zero layout shifts.
 
 ## 🛠️ Technology Stack
 

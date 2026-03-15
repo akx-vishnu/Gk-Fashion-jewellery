@@ -8,44 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        .uploaded-products { padding: 50px 0; background: #fff; }
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 30px; }
-        .product-card { background: #fff; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.05); transition: transform 0.3s; border: 1px solid #eee; display: flex; flex-direction: column; }
-        .product-card:hover { transform: translateY(-10px); }
-        .product-card img { width: 100%; height: 300px; object-fit: cover; }
-        .product-details { padding: 20px; text-align: center; flex-grow: 1; display: flex; flex-direction: column; }
-        .product-details h3 { font-family: 'Playfair Display', serif; margin-bottom: 10px; color: #333; }
-        .product-price { font-weight: 600; color: #b76e79; font-size: 1.2rem; margin-bottom: 15px; }
-        .product-category { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 5px; display: block; }
-        
-        .product-actions { display: flex; gap: 10px; margin-top: auto; }
-        .btn-cart, .btn-quote { flex: 1; padding: 10px; font-size: 0.8rem; border-radius: 5px; cursor: pointer; transition: 0.3s; font-family: 'Montserrat', sans-serif; font-weight: 600; text-decoration: none; border: none; }
-        .btn-cart { background: #333; color: #fff; }
-        .btn-cart:hover { background: #000; }
-        .btn-quote { background: #25d366; color: #fff; display: flex; align-items: center; justify-content: center; gap: 5px; }
-        .btn-quote:hover { background: #128c7e; }
-
-        /* Cart UI */
-        .cart-icon { position: relative; cursor: pointer; list-style: none; font-size: 1.2rem; color: #333; transition: color 0.3s; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: #f9f9f9; }
-        .cart-icon:hover { color: #b76e79; background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        #cart-count { position: absolute; top: -5px; right: -5px; background: #b76e79; color: #fff; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; display: flex; align-items: center; justify-content: center; font-weight: 700; border: 2px solid #fff; }
-
-        #cart-modal { display: none; position: fixed; top: 0; right: 0; width: 400px; height: 100%; background: #fff; box-shadow: -5px 0 15px rgba(0,0,0,0.1); z-index: 1000; padding: 30px; flex-direction: column; }
-        .cart-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
-        .cart-items { flex-grow: 1; overflow-y: auto; }
-        .cart-item { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; border-bottom: 1px solid #f9f9f9; padding-bottom: 10px; }
-        .cart-item img { width: 60px; height: 60px; object-fit: cover; border-radius: 5px; }
-        .cart-item-info { flex-grow: 1; }
-        
-        .quantity-control { display: flex; align-items: center; gap: 8px; margin-top: 5px; }
-        .quantity-control button { width: 24px; height: 24px; border-radius: 50%; border: 1px solid #ddd; background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; }
-        .quantity-control span { font-weight: 600; min-width: 20px; text-align: center; }
-
-        .cart-footer { border-top: 1px solid #eee; padding-top: 20px; }
-        .btn-checkout { width: 100%; padding: 15px; background: #25d366; color: #fff; border: none; border-radius: 5px; font-weight: 600; cursor: pointer; margin-bottom: 10px; display: block; text-align: center; text-decoration: none; }
-        .btn-continue { width: 100%; padding: 15px; background: #eee; color: #333; border: none; border-radius: 5px; font-weight: 600; cursor: pointer; }
-    </style>
 </head>
 <body>
 
@@ -93,13 +55,6 @@
         </div>
     </section>
 
-    <section id="new-arrivals" class="uploaded-products container">
-        <h2 class="section-title">New Arrivals</h2>
-        <div id="product-container" class="product-grid">
-            <p>Loading the latest handcrafted pieces...</p>
-        </div>
-    </section>
-
     <section id="categories" class="categories container">
         <h2 class="section-title">Our Collections</h2>
         <div class="category-grid">
@@ -124,6 +79,13 @@
                     <p>Minimalist elegance for everyday style.</p>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <section id="new-arrivals" class="uploaded-products container">
+        <h2 class="section-title">New Arrivals</h2>
+        <div id="product-container" class="product-grid">
+            <p>Loading the latest handcrafted pieces...</p>
         </div>
     </section>
 
@@ -224,7 +186,7 @@
                 alert("Your cart is empty!");
                 return;
             }
-            const phoneNumber = "9496202179";
+            const phoneNumber = "9496202159";
             let message = "Hello GK Fashion Jewellery, I'd like to request a quote for the following items:\n\n";
             let total = 0;
 
@@ -307,20 +269,20 @@
             <div class="footer-contact">
                 <h4>Contact Us</h4>
                 <p>Email: info@gkfashionjewellery.com</p>
-                <p>Phone: +91 94962 02179</p>
+                <p>Phone: +91 94962 02159</p>
                 <p>Location: Palakkad, India</p>
             </div>
             <div class="footer-social">
                 <h4>Follow Us</h4>
                 <div class="social-icons">
-                    <a href="https://instagram.com/akx_vishnu" target="_blank">Instagram</a>
+                    <a href="#">Instagram</a>
                     <a href="#">Facebook</a>
                     <a href="#">Pinterest</a>
                 </div>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2024 GK Fashion Jewellery. All Rights Reserved.</p>
+            <p>&copy; 2026 GK Fashion Jewellery. All Rights Reserved.</p>
         </div>
     </footer>
 
