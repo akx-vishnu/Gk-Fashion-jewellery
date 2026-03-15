@@ -109,7 +109,7 @@ app.post('/upload', upload.single('image'), async (req, res, next) => {
     const { data: dbData, error: dbError } = await supabase
       .from('products')
       .insert([
-        { name, price: parseFloat(price), category, image: publicUrl }
+        { name, price: parseFloat(price), category, image: publicUrl, description: req.body.description || null }
       ])
       .select();
 

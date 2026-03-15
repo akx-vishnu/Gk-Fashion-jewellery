@@ -340,6 +340,19 @@ nav {
     display: block; 
 }
 
+.product-description {
+    font-size: 0.85rem;
+    color: #777;
+    margin: 5px 0 15px;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-align: center;
+}
+
 .product-actions { 
     display: flex; 
     gap: 12px; 

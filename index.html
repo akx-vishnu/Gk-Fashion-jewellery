@@ -218,6 +218,7 @@
                                 <span class="product-category">${p.category}</span>
                                 <h3>${p.name}</h3>
                                 <p class="product-price">₹${Number(p.price).toLocaleString('en-IN')}</p>
+                                ${p.description ? `<p class="product-description">${p.description}</p>` : ''}
                                 
                                 <div class="product-actions">
                                     <button class="btn-cart" onclick="addToCart('${p.name}', '${p.price}', '${p.image}')">Add to Cart</button>

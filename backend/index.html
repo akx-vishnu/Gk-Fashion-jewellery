@@ -277,6 +277,10 @@
                     </select>
                 </div>
                 <div class="input-group">
+                    <label>Product Description (Optional)</label>
+                    <textarea id="description" placeholder="Enter product details, materials, or story..." style="width: 100%; padding: 14px 16px; background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; color: #fff; font-family: 'Jost', sans-serif; font-size: 15px; outline: none; transition: all 0.3s ease; resize: vertical; min-height: 100px;"></textarea>
+                </div>
+                <div class="input-group">
                   <label>Product Visual (Image)</label>
                   <input type="file" id="image" accept="image/*" required />
                 </div>
@@ -337,6 +341,7 @@
                     <img src="${API_BASE}${p.image}" alt="${p.name}">
                     <strong>${p.name}</strong>
                     <p style="color: var(--gold-light); font-weight: 500;">₹${Number(p.price).toLocaleString('en-IN')}</p>
+                    ${p.description ? `<p style="font-size: 11px; color: var(--muted); margin-top: 5px; line-height: 1.4;">${p.description}</p>` : ''}
                     <button class="btn-delete" data-id="${p.id}">Delete Piece</button>
                 </div>
             `).join('');
@@ -386,6 +391,7 @@
       formData.append('name', document.getElementById('name').value);
       formData.append('price', document.getElementById('price').value);
       formData.append('category', document.getElementById('category').value);
+      formData.append('description', document.getElementById('description').value);
       formData.append('image', document.getElementById('image').files[0]);
 
       try {
