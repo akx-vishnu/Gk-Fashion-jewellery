@@ -1,0 +1,82 @@
+# GK Fashion Jewelry - Elegant Artificial Jewellery
+
+A premium, high-performance e-commerce web application for artificial jewellery. This project features a modern UI, a fully functional shopping cart with WhatsApp integration, and a secure administrative backend for product management.
+
+> [!IMPORTANT]
+> **Project Description (for GitHub):**
+> A modern, responsive e-commerce platform for premium artificial jewellery. Built with a Node.js/Express backend and a vanilla JS frontend, it features automated WhatsApp quote generation, a secure Supabase-powered product gallery, and 100% mobile optimization. Designed for elegance and seamless user experience. (338 characters)
+
+## ✨ Key Features
+
+- **💎 Premium UI/UX**: Modern design with glassmorphism effects, smooth animations, and a sleek dark/light theme.
+- **📱 Mobile-First Design**: 100% responsive across all devices, from small smartphones to large desktops.
+- **🛒 Smart Shopping Cart**: Real-time total calculation and persistent state.
+- **📲 WhatsApp Checkout**: Generates detailed itemized quotes sent directly to the store's WhatsApp.
+- **🛠️ Admin Dashboard**: Secure interface for adding and deleting products with cloud-based image storage.
+- **🚀 Cloud Integration**: Powered by Supabase for high-performance data storage and asset management.
+
+## 🛠️ Technology Stack
+
+- **Frontend**: HTML5, CSS3 (Custom Tokens), JavaScript (ES6+)
+- **Backend**: Node.js, Express.js (Serverless Ready)
+- **Database**: Supabase (PostgreSQL)
+- **Storage**: Supabase Storage Buckets
+- **Deployment**: Vercel (Configured via `vercel.json`)
+
+## 🚀 Getting Started
+
+### 1. Prerequisites
+- [Node.js](https://nodejs.org/) (v16.x or higher)
+- [Supabase](https://supabase.com/) Account
+
+### 2. Installation
+```bash
+git clone https://github.com/your-username/gk-fashion-jewelry.git
+cd gk-fashion-jewelry/backend
+npm install
+```
+
+### 3. Environment Variables
+Create a `.env` file in the `backend/` directory based on `.env.example`:
+```env
+SUPABASE_URL=your_project_url
+SUPABASE_ANON_KEY=your_anon_key
+ADMIN_USER=your_admin_email
+ADMIN_PASS=your_admin_password
+```
+
+### 4. Database Setup
+Run this SQL in your Supabase SQL Editor:
+```sql
+create table products (
+  id bigint primary key generated always as identity,
+  created_at timestamptz default now(),
+  name text not null,
+  price numeric not null,
+  category text,
+  image text
+);
+```
+Create a **Public** storage bucket named `product-images`.
+
+### 5. Running Locally
+```bash
+# In the backend folder
+npm start
+```
+Then simply open `index.html` in your browser.
+
+## ☁️ Deployment
+
+### Vercel Deployment
+1. Import your repository to Vercel.
+2. The `vercel.json` is already configured for the backend functions.
+3. In Vercel Project Settings, add all variables from your `.env` to the **Environment Variables** section.
+4. Deploy!
+
+## 📄 License
+This project is licensed under the ISC License.
+
+---
+*Crafted for GK Fashion Jewelry. All rights reserved.*
+

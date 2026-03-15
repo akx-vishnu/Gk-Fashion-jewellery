@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GK FASHION JEWELRY - Elegant Artificial Jewellery</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .uploaded-products { padding: 50px 0; background: #fff; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 30px; }
+        .product-card { background: #fff; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.05); transition: transform 0.3s; border: 1px solid #eee; display: flex; flex-direction: column; }
+        .product-card:hover { transform: translateY(-10px); }
+        .product-card img { width: 100%; height: 300px; object-fit: cover; }
+        .product-details { padding: 20px; text-align: center; flex-grow: 1; display: flex; flex-direction: column; }
+        .product-details h3 { font-family: 'Playfair Display', serif; margin-bottom: 10px; color: #333; }
+        .product-price { font-weight: 600; color: #b76e79; font-size: 1.2rem; margin-bottom: 15px; }
+        .product-category { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 5px; display: block; }
+        
+        .product-actions { display: flex; gap: 10px; margin-top: auto; }
+        .btn-cart, .btn-quote { flex: 1; padding: 10px; font-size: 0.8rem; border-radius: 5px; cursor: pointer; transition: 0.3s; font-family: 'Montserrat', sans-serif; font-weight: 600; text-decoration: none; border: none; }
+        .btn-cart { background: #333; color: #fff; }
+        .btn-cart:hover { background: #000; }
+        .btn-quote { background: #25d366; color: #fff; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .btn-quote:hover { background: #128c7e; }
+
+        /* Cart UI */
+        .cart-icon { position: relative; cursor: pointer; list-style: none; font-size: 1.2rem; color: #333; transition: color 0.3s; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: #f9f9f9; }
+        .cart-icon:hover { color: #b76e79; background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        #cart-count { position: absolute; top: -5px; right: -5px; background: #b76e79; color: #fff; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; display: flex; align-items: center; justify-content: center; font-weight: 700; border: 2px solid #fff; }
+
+        #cart-modal { display: none; position: fixed; top: 0; right: 0; width: 400px; height: 100%; background: #fff; box-shadow: -5px 0 15px rgba(0,0,0,0.1); z-index: 1000; padding: 30px; flex-direction: column; }
+        .cart-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
+        .cart-items { flex-grow: 1; overflow-y: auto; }
+        .cart-item { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; border-bottom: 1px solid #f9f9f9; padding-bottom: 10px; }
+        .cart-item img { width: 60px; height: 60px; object-fit: cover; border-radius: 5px; }
+        .cart-item-info { flex-grow: 1; }
+        
+        .quantity-control { display: flex; align-items: center; gap: 8px; margin-top: 5px; }
+        .quantity-control button { width: 24px; height: 24px; border-radius: 50%; border: 1px solid #ddd; background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+        .quantity-control span { font-weight: 600; min-width: 20px; text-align: center; }
+
+        .cart-footer { border-top: 1px solid #eee; padding-top: 20px; }
+        .btn-checkout { width: 100%; padding: 15px; background: #25d366; color: #fff; border: none; border-radius: 5px; font-weight: 600; cursor: pointer; margin-bottom: 10px; display: block; text-align: center; text-decoration: none; }
+        .btn-continue { width: 100%; padding: 15px; background: #eee; color: #333; border: none; border-radius: 5px; font-weight: 600; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav class="container">
+            <div class="logo">GK FASHION JEWELRY</div>
+            <div class="hamburger" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+            <ul class="nav-links" id="nav-menu">
+                <li><a href="#home" onclick="toggleMenu()">Home</a></li>
+                <li><a href="#categories" onclick="toggleMenu()">Collections</a></li>
+                <li><a href="#new-arrivals" onclick="toggleMenu()">New Arrivals</a></li>
+                <li><a href="#why-us" onclick="toggleMenu()">Why Us</a></li>
+                <li><a href="#contact" onclick="toggleMenu()">Contact</a></li>
+                <li class="cart-icon" onclick="toggleCart()"><i class="fas fa-shopping-cart"></i><span id="cart-count">0</span></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Cart Modal -->
+    <div id="cart-modal">
+        <div class="cart-header">
+            <h3>Your Shopping Cart</h3>
+            <button onclick="toggleCart()" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
+        </div>
+        <div id="cart-items-container" class="cart-items">
+            <!-- Cart items injected here -->
+        </div>
+        <div class="cart-footer">
+            <div style="display:flex; justify-content:space-between; margin-bottom:20px; font-weight:600;">
+                <span>Total:</span>
+                <span id="cart-total">₹0</span>
+            </div>
+            <button class="btn-checkout" onclick="checkoutWhatsApp()">Request Quote on WhatsApp</button>
+            <button class="btn-continue" onclick="toggleCart()">Continue Shopping</button>
+        </div>
+    </div>
+
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Elegant Artistry for Every Occasion</h1>
+            <p>Premium Artificial Jewellery Crafted with Passion</p>
+            <a href="#new-arrivals" class="btn">Shop New Arrivals</a>
+        </div>
+    </section>
+
+    <section id="new-arrivals" class="uploaded-products container">
+        <h2 class="section-title">New Arrivals</h2>
+        <div id="product-container" class="product-grid">
+            <p>Loading the latest handcrafted pieces...</p>
+        </div>
+    </section>
+
+    <section id="categories" class="categories container">
+        <h2 class="section-title">Our Collections</h2>
+        <div class="category-grid">
+            <div class="category-card">
+                <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=600&q=80" alt="Bridal Wear">
+                <div class="category-info">
+                    <h3>Bridal Wear</h3>
+                    <p>Royal pieces for your special day.</p>
+                </div>
+            </div>
+            <div class="category-card">
+                <img src="https://images.unsplash.com/photo-1576053139778-7e32f2ae3cfd?auto=format&fit=crop&w=600&q=80" alt="Party Wear">
+                <div class="category-info">
+                    <h3>Party Wear</h3>
+                    <p>Glamorous designs for unforgettable nights.</p>
+                </div>
+            </div>
+            <div class="category-card">
+                <img src="https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?auto=format&fit=crop&w=600&q=80" alt="Daily Wear">
+                <div class="category-info">
+                    <h3>Daily Wear</h3>
+                    <p>Minimalist elegance for everyday style.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? 'http://localhost:5000' 
+            : ''; 
+
+        let cart = JSON.parse(localStorage.getItem('gk_cart')) || [];
+
+        function toggleMenu() {
+            const navMenu = document.getElementById('nav-menu');
+            const hamburgerIcon = document.querySelector('.hamburger i');
+            if (window.innerWidth <= 768) {
+                navMenu.classList.toggle('active');
+                hamburgerIcon.classList.toggle('fa-bars');
+                hamburgerIcon.classList.toggle('fa-times');
+            }
+        }
+
+        function toggleCart() {
+            const modal = document.getElementById('cart-modal');
+            const isFlex = modal.style.display === 'flex';
+            modal.style.display = isFlex ? 'none' : 'flex';
+            if (!isFlex) {
+                renderCart();
+                // Close mobile menu if open
+                const navMenu = document.getElementById('nav-menu');
+                if (navMenu && navMenu.classList.contains('active')) {
+                    toggleMenu();
+                }
+            }
+        }
+
+        function updateCartCount() {
+            document.getElementById('cart-count').innerText = cart.reduce((sum, item) => sum + item.quantity, 0);
+            localStorage.setItem('gk_cart', JSON.stringify(cart));
+        }
+
+        function addToCart(name, price, image) {
+            const existingItem = cart.find(item => item.name === name);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ name, price: parseInt(price), image, quantity: 1 });
+            }
+            
+            updateCartCount();
+            alert(`${name} added to cart!`);
+        }
+
+        function changeQuantity(index, delta) {
+            cart[index].quantity += delta;
+            if (cart[index].quantity <= 0) {
+                cart.splice(index, 1);
+            }
+            updateCartCount();
+            renderCart();
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cart-items-container');
+            const totalEl = document.getElementById('cart-total');
+            let total = 0;
+
+            if (cart.length === 0) {
+                container.innerHTML = '<p>Your cart is empty.</p>';
+                totalEl.innerText = '₹0';
+                return;
+            }
+
+            container.innerHTML = cart.map((item, index) => {
+                total += item.price * item.quantity;
+                const imgSrc = item.image.startsWith('http') ? item.image : `${API_BASE}${item.image}`;
+                return `
+                    <div class="cart-item">
+                        <img src="${imgSrc}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/60x60?text=Jewel'">
+                        <div class="cart-item-info">
+                            <strong>${item.name}</strong><br>
+                            <small>₹${item.price}</small>
+                            <div class="quantity-control">
+                                <button onclick="changeQuantity(${index}, -1)">-</button>
+                                <span>${item.quantity}</span>
+                                <button onclick="changeQuantity(${index}, 1)">+</button>
+                            </div>
+                        </div>
+                        <div style="font-weight:600;">
+                            ₹${item.price * item.quantity}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            totalEl.innerText = `₹${total}`;
+        }
+
+        function checkoutWhatsApp() {
+            if (cart.length === 0) {
+                alert("Your cart is empty!");
+                return;
+            }
+            const phoneNumber = "9496202179";
+            let message = "Hello GK Fashion Jewelry, I'd like to request a quote for the following items:\n\n";
+            let total = 0;
+
+            cart.forEach(item => {
+                message += `*${item.name}* (Qty: ${item.quantity}) - ₹${item.price * item.quantity}\n`;
+                total += item.price * item.quantity;
+            });
+
+            message += `\n*Total Estimate:* ₹${total}\n\nPlease let me know about availability and shipping.`;
+            window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        async function fetchProducts() {
+            const container = document.getElementById('product-container');
+            try {
+                const response = await fetch(`${API_BASE}/products`);
+                const products = await response.json();
+
+                if (!products || products.length === 0) {
+                    container.innerHTML = '<p>Check back soon for new arrivals!</p>';
+                    return;
+                }
+
+                container.innerHTML = products.map(p => {
+                    return `
+                        <div class="product-card">
+                            <img src="${API_BASE}${p.image}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/300x300?text=Image+Not+Found'">
+                            <div class="product-details">
+                                <span class="product-category">${p.category}</span>
+                                <h3>${p.name}</h3>
+                                <p class="product-price">₹${Number(p.price).toLocaleString('en-IN')}</p>
+                                
+                                <div class="product-actions">
+                                    <button class="btn-cart" onclick="addToCart('${p.name}', '${p.price}', '${p.image}')">Add to Cart</button>
+                                    <button class="btn-quote" onclick="addToCart('${p.name}', '${p.price}', '${p.image}'); toggleCart();"><i class="fas fa-shopping-bag"></i> Buy Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (err) {
+                console.error('Failed to fetch products:', err);
+                container.innerHTML = '<p>Unable to load products. Make sure the backend server is running.</p>';
+            }
+        }
+
+        fetchProducts();
+        updateCartCount();
+    </script>
+
+    <section id="why-us" class="why-us">
+        <div class="container">
+            <h2 class="section-title">Why Choose GK Fashion Jewelry?</h2>
+            <div class="features">
+                <div class="feature-item">
+                    <i class="fas fa-gem"></i>
+                    <h3>Premium Quality</h3>
+                    <p>Crafted with the finest materials to ensure a long-lasting shine and luxurious feel.</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-tags"></i>
+                    <h3>Affordable Luxury</h3>
+                    <p>Experience the look of high-end jewelry without the hefty price tag.</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-truck"></i>
+                    <h3>Fast & Secure Delivery</h3>
+                    <p>Carefully packed and delivered to your doorstep with love.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <div class="container footer-content">
+            <div class="footer-info">
+                <h3>GK FASHION JEWELRY</h3>
+                <p>Redefining Elegance with Modern Artistry.</p>
+            </div>
+            <div class="footer-contact">
+                <h4>Contact Us</h4>
+                <p>Email: info@gkfashionjewelry.com</p>
+                <p>Phone: +91 94962 02179</p>
+                <p>Location: Palakkad, India</p>
+            </div>
+            <div class="footer-social">
+                <h4>Follow Us</h4>
+                <div class="social-icons">
+                    <a href="https://instagram.com/akx_vishnu" target="_blank">Instagram</a>
+                    <a href="#">Facebook</a>
+                    <a href="#">Pinterest</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 GK Fashion Jewelry. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

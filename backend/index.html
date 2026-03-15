@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GK FASHION JEWELRY — Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #C8A97E;
+      --gold-light: #E2C99A;
+      --bg: #0E0D0C;
+      --surface: #161412;
+      --surface2: #1F1C19;
+      --border: rgba(200, 169, 126, 0.2);
+      --text: #EDE8E1;
+      --muted: #7A7269;
+      --danger: #ff4d4d;
+    }
+    
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body { 
+      font-family: 'Jost', sans-serif; 
+      background: var(--bg); 
+      color: var(--text); 
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Noise & Glow background effect */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.6;
+    }
+
+    #login-container { 
+      margin: auto;
+      background: var(--surface); 
+      padding: 50px 40px; 
+      border: 1px solid var(--border); 
+      border-radius: 8px; 
+      width: 100%; 
+      max-width: 420px; 
+      position: relative;
+      z-index: 10;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    h2, h1, h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 400;
+      letter-spacing: 1px;
+    }
+
+    #login-container h2 {
+      text-align: center;
+      font-size: 2.2rem;
+      margin-bottom: 40px;
+      color: var(--gold-light);
+    }
+
+    #admin-dashboard { 
+      display: none; 
+      width: 100%; 
+      max-width: 1300px; 
+      margin: 0 auto;
+      padding: 40px 30px; 
+      position: relative;
+      z-index: 10;
+    }
+
+    .input-group { 
+      margin-bottom: 25px; 
+      width: 100%;
+    }
+
+    label { 
+      display: block; 
+      font-size: 11px; 
+      text-transform: uppercase; 
+      letter-spacing: 1.5px;
+      color: var(--gold); 
+      margin-bottom: 10px; 
+      font-weight: 500;
+    }
+
+    input, select { 
+      width: 100%; 
+      padding: 14px 16px; 
+      background: var(--surface2); 
+      border: 1px solid var(--border); 
+      border-radius: 4px;
+      color: #fff; 
+      font-family: 'Jost', sans-serif;
+      font-size: 15px;
+      outline: none; 
+      transition: all 0.3s ease;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--gold);
+      background: rgba(200, 169, 126, 0.05);
+      box-shadow: 0 0 0 1px var(--gold);
+    }
+
+    button { 
+      width: 100%; 
+      padding: 16px; 
+      background: var(--gold); 
+      border: 1px solid var(--gold);
+      color: var(--bg); 
+      font-family: 'Jost', sans-serif;
+      font-weight: 600; 
+      font-size: 12px;
+      letter-spacing: 2px;
+      cursor: pointer; 
+      text-transform: uppercase; 
+      border-radius: 4px;
+      transition: all 0.4s ease;
+    }
+
+    button:hover {
+      background: transparent;
+      color: var(--gold);
+    }
+
+    .btn-delete { 
+      background: var(--danger); 
+      border-color: var(--danger);
+      color: white; 
+      padding: 8px 20px; 
+      font-size: 10px; 
+      margin-top: 15px; 
+      width: auto; 
+    }
+
+    .btn-delete:hover {
+      background: transparent;
+      color: var(--danger);
+    }
+
+    .hidden { display: none !important; }
+
+    .dashboard-grid {
+      display: grid; 
+      grid-template-columns: 380px 1fr; 
+      gap: 50px; 
+      margin-top: 40px;
+    }
+
+    @media (max-width: 900px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: var(--surface);
+      padding: 35px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    .panel h3 {
+      font-size: 1.8rem;
+      margin-bottom: 30px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 15px;
+    }
+
+    .inventory-item { 
+      background: var(--surface);
+      border: 1px solid var(--border); 
+      padding: 20px; 
+      border-radius: 8px; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      text-align: center; 
+      transition: transform 0.3s ease;
+    }
+
+    .inventory-item:hover {
+      transform: translateY(-5px);
+      border-color: var(--gold);
+    }
+
+    .inventory-item img { 
+      width: 100%; 
+      height: 180px; 
+      object-fit: cover; 
+      border-radius: 4px; 
+      margin-bottom: 15px;
+      background: var(--surface2);
+    }
+
+    .inventory-item strong {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    #inventory-grid {
+      display: grid; 
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
+      gap: 25px;
+    }
+
+    header {
+      text-align: center;
+      padding-bottom: 20px;
+    }
+
+    header h1 {
+      font-size: 3rem;
+      color: var(--text);
+    }
+
+    hr {
+      border: 0;
+      border-top: 1px solid var(--border);
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Login Form -->
+  <div id="login-container">
+    <h2>Admin Login</h2>
+    <form id="loginForm">
+      <div class="input-group">
+        <label>Email Address</label>
+        <input type="email" id="loginEmail" placeholder="email address" required />
+      </div>
+      <div class="input-group">
+        <label>Security Password</label>
+        <input type="password" id="loginPass" placeholder="••••••••" required />
+      </div>
+      <button type="submit">Access Dashboard</button>
+    </form>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="admin-dashboard">
+    <header>
+      <h1>GK Admin Dashboard</h1>
+      <p style="color: var(--gold); letter-spacing: 3px; font-size: 10px; text-transform: uppercase; margin-top: 5px;">Product Management Portal</p>
+    </header>
+    
+    <div class="dashboard-grid">
+        <div id="upload-panel" class="panel">
+            <h3>New Product</h3>
+            <form id="uploadForm">
+                <div class="input-group">
+                  <label>Product Name</label>
+                  <input type="text" id="name" placeholder="e.g. Traditional Gold Choker" required />
+                </div>
+                <div class="input-group">
+                  <label>Price (₹)</label>
+                  <input type="number" id="price" placeholder="0.00" required />
+                </div>
+                <div class="input-group">
+                    <label>Collection Category</label>
+                    <select id="category" required>
+                        <option value="" disabled selected>Choose a category</option>
+                        <option value="Necklace">Necklace</option>
+                        <option value="Earrings">Earrings</option>
+                        <option value="Ring">Ring</option>
+                        <option value="Bangle">Bangle</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                  <label>Product Visual (Image)</label>
+                  <input type="file" id="image" accept="image/*" required />
+                </div>
+                <button type="submit">Publish Product</button>
+            </form>
+        </div>
+        <div id="products-list">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 30px;">
+              <h3 style="font-size: 1.8rem;">Current Inventory</h3>
+              <span id="item-count" style="font-size: 12px; color: var(--muted); letter-spacing: 1px;">0 ITEMS</span>
+            </div>
+            <div id="inventory-grid"></div>
+        </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = ''; // Use relative paths for same-origin requests
+    const loginForm = document.getElementById('loginForm');
+    const uploadForm = document.getElementById('uploadForm');
+    const loginContainer = document.getElementById('login-container');
+    const dashboard = document.getElementById('admin-dashboard');
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const response = await fetch(`${API_BASE}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: document.getElementById('loginEmail').value,
+          password: document.getElementById('loginPass').value
+        })
+      });
+      if (response.ok) {
+        loginContainer.classList.add('hidden');
+        dashboard.style.display = 'block';
+        document.body.style.display = 'block'; // Reset flex for dashboard
+        fetchInventory();
+      } else {
+        alert("Authentication Failed: Invalid credentials.");
+      }
+    });
+
+    async function fetchInventory() {
+        try {
+            const response = await fetch(`${API_BASE}/products`);
+            const products = await response.json();
+            const grid = document.getElementById('inventory-grid');
+            document.getElementById('item-count').innerText = `${products.length} ${products.length === 1 ? 'ITEM' : 'ITEMS'}`;
+            
+            if(products.length === 0) {
+              grid.innerHTML = '<div style="grid-column: 1/-1; padding: 50px; text-align: center; color: var(--muted); border: 1px dashed var(--border);">No products in inventory.</div>';
+              return;
+            }
+
+            grid.innerHTML = products.map(p => `
+                <div class="inventory-item">
+                    <img src="${API_BASE}${p.image}" alt="${p.name}">
+                    <strong>${p.name}</strong>
+                    <p style="color: var(--gold-light); font-weight: 500;">₹${Number(p.price).toLocaleString('en-IN')}</p>
+                    <button class="btn-delete" data-id="${p.id}">Delete Piece</button>
+                </div>
+            `).join('');
+        } catch (err) {
+            console.error('Fetch inventory error:', err);
+        }
+    }
+
+    // Event delegation for delete buttons
+    document.getElementById('inventory-grid').addEventListener('click', (e) => {
+        if (e.target.classList.contains('btn-delete')) {
+            const id = e.target.getAttribute('data-id');
+            deleteProduct(id);
+        }
+    });
+
+    async function deleteProduct(id) {
+        if (!confirm("Remove this piece from the inventory?")) return;
+        console.log(`Attempting to delete product with ID: ${id}`);
+        try {
+            const response = await fetch(`${API_BASE}/products/${id}`, { 
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            if (response.ok) {
+                console.log('Delete successful on server');
+                // Immediately update local UI by re-fetching
+                await fetchInventory();
+            } else {
+                const errData = await response.json();
+                console.error('Server rejected delete:', errData);
+                alert("Delete operation failed: " + (errData.error || "Server error"));
+            }
+        } catch (err) {
+            console.error('Fetch error during delete:', err);
+            alert("A network error occurred. Please check if the server is running.");
+        }
+    }
+
+    uploadForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const submitBtn = uploadForm.querySelector('button');
+      submitBtn.innerText = "PUBLISHING...";
+      submitBtn.disabled = true;
+
+      const formData = new FormData();
+      formData.append('name', document.getElementById('name').value);
+      formData.append('price', document.getElementById('price').value);
+      formData.append('category', document.getElementById('category').value);
+      formData.append('image', document.getElementById('image').files[0]);
+
+      try {
+        const response = await fetch(`${API_BASE}/upload`, { method: 'POST', body: formData });
+        if (response.ok) {
+          uploadForm.reset();
+          fetchInventory();
+          alert("Product Published Successfully!");
+        } else {
+          alert("Upload failed.");
+        }
+      } catch (err) {
+        alert("A network error occurred.");
+      } finally {
+        submitBtn.innerText = "PUBLISH PRODUCT";
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
