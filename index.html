@@ -107,22 +107,42 @@
             }
         }
 
-        function toggleCart() {
+        async function toggleCart() {
             const modal = document.getElementById('cart-modal');
             const isFlex = modal.style.display === 'flex';
-            modal.style.display = isFlex ? 'none' : 'flex';
+            
             if (!isFlex) {
+                // Proactively refresh products and sync cart before showing
+                await fetchProducts(true); 
                 renderCart();
+                modal.style.display = 'flex';
+                
                 const navMenu = document.getElementById('nav-menu');
                 if (navMenu && navMenu.classList.contains('active')) {
                     toggleMenu();
                 }
+            } else {
+                modal.style.display = 'none';
             }
         }
 
         function updateCartCount() {
             document.getElementById('cart-count').innerText = cart.reduce((sum, item) => sum + item.quantity, 0);
             localStorage.setItem('gk_cart', JSON.stringify(cart));
+        }
+
+        function syncCart(products) {
+            const validIds = new Set(products.map(p => String(p.id)));
+            const initialCartLength = cart.length;
+            const removedItems = cart.filter(item => !validIds.has(String(item.id)));
+            
+            cart = cart.filter(item => validIds.has(String(item.id)));
+            
+            if (cart.length !== initialCartLength) {
+                updateCartCount();
+                const names = removedItems.map(i => i.name).join(', ');
+                alert(`Some items were removed from your cart as they are no longer available: ${names}`);
+            }
         }
 
         function addToCart(id, name, price, image) {
@@ -192,11 +212,16 @@
             totalEl.innerText = `₹${total}`;
         }
 
-        function checkoutWhatsApp() {
+        async function checkoutWhatsApp() {
             if (cart.length === 0) {
                 alert("Your cart is empty!");
                 return;
             }
+
+            // Final sync check before checkout
+            await fetchProducts(true);
+            if (cart.length === 0) return; // Cart became empty after sync
+
             const phoneNumber = "9496202159";
             let message = "Hello GK Fashion Jewellery, I'd like to request a quote for the following items:\n\n";
             let total = 0;
@@ -210,25 +235,20 @@
             window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank');
         }
 
-        async function fetchProducts() {
+        async function fetchProducts(quiet = false) {
             const container = document.getElementById('product-container');
             try {
                 const response = await fetch(`${API_BASE}/products`);
                 const products = await response.json();
 
                 if (!products || products.length === 0) {
-                    container.innerHTML = '<p>Check back soon for new arrivals!</p>';
+                    if (!quiet) container.innerHTML = '<p>Check back soon for new arrivals!</p>';
                     return;
                 }
 
-                // Sync Cart: Remove items that no longer exist in the database
-                const validIds = new Set(products.map(p => String(p.id)));
-                const initialCartLength = cart.length;
-                cart = cart.filter(item => validIds.has(String(item.id)));
-                
-                if (cart.length !== initialCartLength) {
-                    updateCartCount();
-                }
+                syncCart(products);
+
+                if (quiet) return; // Only syncing, don't re-render product grid
 
                 container.innerHTML = products.map(p => {
                     return `
