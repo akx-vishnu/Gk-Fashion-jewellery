@@ -202,13 +202,13 @@ nav {
     height: 100%;
     background-color: var(--primary-color);
     transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
-    transform: scaleX(0);
-    transform-origin: left;
+    transform: scaleX(1);
+    transform-origin: right;
     z-index: -1;
 }
 
 .btn:hover::before {
-    transform: scaleX(1);
+    transform: scaleX(0);
 }
 
 .btn:hover {
