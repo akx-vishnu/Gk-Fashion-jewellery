@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GK FASHION JEWELLERY - Elegant Artificial Jewellery</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="logo.png">
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
@@ -11,14 +13,19 @@
 </head>
 <body>
 
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
     <header>
         <nav class="container">
-            <div class="logo">GK FASHION JEWELLERY</div>
+            <a href="#home" class="logo">
+                <img src="logo.png" alt="GK Logo" class="logo-img">
+                GK FASHION JEWELLERY
+            </a>
             <div class="hamburger" onclick="toggleMenu()">
                 <i class="fas fa-bars"></i>
             </div>
             <ul class="nav-links" id="nav-menu">
-                <li><a href="#home" onclick="toggleMenu()">Home</a></li>
                 <li><a href="#categories" onclick="toggleMenu()">Collections</a></li>
                 <li><a href="#new-arrivals" onclick="toggleMenu()">New Arrivals</a></li>
                 <li><a href="#why-us" onclick="toggleMenu()">Why Us</a></li>
@@ -236,7 +243,7 @@
             await fetchProducts(true);
             if (cart.length === 0) return; // Cart became empty after sync
 
-            const phoneNumber = "9496202159";
+            const phoneNumber = "9487724818";
             let message = "Hello GK Fashion Jewellery, I'd like to request a quote for the following items:\n\n";
             let total = 0;
 
@@ -292,8 +299,103 @@
         updateCartCount();
     </script>
 
+    <script>
+        // Custom Animated Cursor
+        (function() {
+            const cursor = document.querySelector('.cursor');
+            const follower = document.querySelector('.cursor-follower');
+            
+            if (!cursor || !follower) return;
+
+            let posX = 0, posY = 0;
+            let mouseX = 0, mouseY = 0;
+
+            if (window.matchMedia("(pointer: fine)").matches) {
+                document.addEventListener("mousemove", (e) => {
+                    mouseX = e.clientX;
+                    mouseY = e.clientY;
+                    cursor.style.setProperty('--cursor-x', `${mouseX}px`);
+                    cursor.style.setProperty('--cursor-y', `${mouseY}px`);
+                });
+
+                function animateFollower() {
+                    posX += (mouseX - posX) / 9;
+                    posY += (mouseY - posY) / 9;
+                    follower.style.setProperty('--follower-x', `${posX}px`);
+                    follower.style.setProperty('--follower-y', `${posY}px`);
+                    requestAnimationFrame(animateFollower);
+                }
+                animateFollower();
+
+                // Mouse hover effects - use event delegation
+                document.addEventListener('mouseover', (e) => {
+                    const target = e.target.closest('a, button, .cart-icon, .category-card, .product-card, .hamburger, .btn-cart, .btn-quote');
+                    if (target) {
+                        cursor.classList.add('active');
+                        follower.classList.add('active');
+                    }
+                });
+
+                document.addEventListener('mouseout', (e) => {
+                    const target = e.target.closest('a, button, .cart-icon, .category-card, .product-card, .hamburger, .btn-cart, .btn-quote');
+                    if (target) {
+                        cursor.classList.remove('active');
+                        follower.classList.remove('active');
+                    }
+                });
+            } else {
+                cursor.style.display = 'none';
+                follower.style.display = 'none';
+            }
+        })();
+    </script>
+
+
+
     <!-- Custom Alert Components -->
     <div id="toast-container"></div>
+
+    <section id="testimonials" class="testimonials container">
+        <h2 class="section-title">Customer Reviews</h2>
+        <div class="testimonial-grid">
+            <div class="testimonial-card">
+                <i class="fas fa-quote-left"></i>
+                <p>The necklace I bought is stunning! Excellent quality and super fast delivery to Palakkad.</p>
+                <div class="stars">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                </div>
+                <h4>Anjali Nair</h4>
+                <span>Palakkad, Kerala</span>
+            </div>
+            <div class="testimonial-card">
+                <i class="fas fa-quote-left"></i>
+                <p>Beautiful collection of rings. My wife loved the design. Highly recommended for Kochiites.</p>
+                <div class="stars">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                </div>
+                <h4>Rahul Krishnan</h4>
+                <span>Kochi, Kerala</span>
+            </div>
+            <div class="testimonial-card">
+                <i class="fas fa-quote-left"></i>
+                <p>Elegant bangles at an affordable price. Great customer service too. Will shop again from Malappuram!</p>
+                <div class="stars">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                </div>
+                <h4>Sneha Das</h4>
+                <span>Malappuram, Kerala</span>
+            </div>
+            <div class="testimonial-card">
+                <i class="fas fa-quote-left"></i>
+                <p>Bought a traditional set for my sister's wedding. It looked royal and very premium. Thrissur folks, check them out!</p>
+                <div class="stars">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                </div>
+                <h4>Faisal Ibrahim</h4>
+                <span>Thrissur, Kerala</span>
+            </div>
+        </div>
+    </section>
 
     <section id="why-us" class="why-us">
         <div class="container">
@@ -326,16 +428,16 @@
             </div>
             <div class="footer-contact">
                 <h4>Contact Us</h4>
-                <p>Email: info@gkfashionjewellery.com</p>
-                <p>Phone: +91 94962 02159</p>
-                <p>Location: Palakkad, India</p>
+                <p>Email: akx_vishnu@pm.me</p>
+                <p>Phone: +91 94877 24818</p>
+                <p>Location: Coimbatore, India</p>
             </div>
             <div class="footer-social">
                 <h4>Follow Us</h4>
                 <div class="social-icons">
+                    <a href="https://wa.me/919487724818" target="_blank">WhatsApp</a>
+                    <a href="https://www.facebook.com/share/17zw6PUZGv/" target="_blank">Facebook</a>
                     <a href="#">Instagram</a>
-                    <a href="#">Facebook</a>
-                    <a href="#">Pinterest</a>
                 </div>
             </div>
         </div>
