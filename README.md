@@ -1,4 +1,4 @@
-# GK Fashion Jewelry - Elegant Artificial Jewellery
+# GK Fashion Jewellery - Elegant Artificial Jewellery
 
 A premium, high-performance e-commerce web application for artificial jewellery. This project features a modern UI, a fully functional shopping cart with WhatsApp integration, and a secure administrative backend for product management.
 
@@ -31,8 +31,8 @@ A premium, high-performance e-commerce web application for artificial jewellery.
 
 ### 2. Installation
 ```bash
-git clone https://github.com/your-username/gk-fashion-jewelry.git
-cd gk-fashion-jewelry/backend
+git clone https://github.com/your-username/gk-fashion-jewellery.git
+cd gk-fashion-jewellery/backend
 npm install
 ```
 
@@ -78,5 +78,5 @@ Then simply open `index.html` in your browser.
 This project is licensed under the ISC License.
 
 ---
-*Crafted for GK Fashion Jewelry. All rights reserved.*
+*Crafted for GK Fashion Jewellery. All rights reserved.*
 

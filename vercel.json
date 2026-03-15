@@ -6,7 +6,19 @@
       "destination": "/backend/index.html"
     },
     {
-      "source": "/(products|upload|login|products/:id)",
+      "source": "/products",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/products/:id",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/upload",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/login",
       "destination": "/api/index.js"
     },
     {

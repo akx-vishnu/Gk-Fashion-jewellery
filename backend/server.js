@@ -42,6 +42,12 @@ app.use(limiter);
 app.use(cors());
 app.use(express.json());
 
+// Request logging for debugging
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
+
 // Login Endpoint
 app.post('/login', (req, res) => {
     const { email, password } = req.body;
@@ -131,13 +137,21 @@ app.delete('/products/:id', async (req, res, next) => {
 
     if (fetchError) throw fetchError;
 
-    if (product) {
-      // Extract file path from public URL
-      const url = new URL(product.image);
-      const pathParts = url.pathname.split('/public/product-images/');
-      if (pathParts.length > 1) {
-        const filePath = pathParts[1];
-        await supabase.storage.from('product-images').remove([filePath]);
+    if (product && product.image) {
+      console.log(`Found product for deletion. Image URL: ${product.image}`);
+      try {
+        // Extract file path from public URL safely
+        const url = new URL(product.image);
+        // Supabase URLs usually look like .../public/product-images/products/123.jpg
+        const pathParts = url.pathname.split('/product-images/');
+        if (pathParts.length > 1) {
+          const filePath = pathParts[1];
+          console.log(`Attempting to remove from storage: ${filePath}`);
+          const { error: storageError } = await supabase.storage.from('product-images').remove([filePath]);
+          if (storageError) console.warn('Storage removal warning:', storageError);
+        }
+      } catch (urlErr) {
+        console.warn('Could not parse image URL for storage cleanup, proceeding with DB deletion:', urlErr.message);
       }
 
       const { error: deleteError } = await supabase
@@ -145,7 +159,10 @@ app.delete('/products/:id', async (req, res, next) => {
         .delete()
         .eq('id', id);
 
-      if (deleteError) throw deleteError;
+      if (deleteError) {
+        console.error('Database Delete Error:', deleteError);
+        throw deleteError;
+      }
       res.json({ message: 'Product deleted successfully' });
     } else {
       res.status(404).json({ error: 'Product not found' });
