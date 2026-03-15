@@ -38,10 +38,11 @@
             <!-- Cart items injected here -->
         </div>
         <div class="cart-footer">
-            <div style="display:flex; justify-content:space-between; margin-bottom:20px; font-weight:600;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-weight:600;">
                 <span>Total:</span>
                 <span id="cart-total">₹0</span>
             </div>
+            <div class="shipping-note">+ shipping if any</div>
             <button class="btn-checkout" onclick="checkoutWhatsApp()">Request Quote on WhatsApp</button>
             <button class="btn-continue" onclick="toggleCart()">Continue Shopping</button>
         </div>
@@ -112,7 +113,6 @@
             modal.style.display = isFlex ? 'none' : 'flex';
             if (!isFlex) {
                 renderCart();
-                // Close mobile menu if open
                 const navMenu = document.getElementById('nav-menu');
                 if (navMenu && navMenu.classList.contains('active')) {
                     toggleMenu();
@@ -125,16 +125,22 @@
             localStorage.setItem('gk_cart', JSON.stringify(cart));
         }
 
-        function addToCart(name, price, image) {
-            const existingItem = cart.find(item => item.name === name);
+        function addToCart(id, name, price, image) {
+            const existingItem = cart.find(item => item.id === id);
             if (existingItem) {
                 existingItem.quantity += 1;
             } else {
-                cart.push({ name, price: parseInt(price), image, quantity: 1 });
+                cart.push({ id, name, price: parseInt(price), image, quantity: 1 });
             }
             
             updateCartCount();
             alert(`${name} added to cart!`);
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartCount();
+            renderCart();
         }
 
         function changeQuantity(index, delta) {
@@ -172,8 +178,13 @@
                                 <button onclick="changeQuantity(${index}, 1)">+</button>
                             </div>
                         </div>
-                        <div style="font-weight:600;">
-                            ₹${item.price * item.quantity}
+                        <div style="text-align:right;">
+                            <div style="font-weight:600; margin-bottom: 5px;">
+                                ₹${item.price * item.quantity}
+                            </div>
+                            <button class="btn-remove" onclick="removeFromCart(${index})" title="Remove item">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
                         </div>
                     </div>
                 `;
@@ -210,6 +221,15 @@
                     return;
                 }
 
+                // Sync Cart: Remove items that no longer exist in the database
+                const validIds = new Set(products.map(p => String(p.id)));
+                const initialCartLength = cart.length;
+                cart = cart.filter(item => validIds.has(String(item.id)));
+                
+                if (cart.length !== initialCartLength) {
+                    updateCartCount();
+                }
+
                 container.innerHTML = products.map(p => {
                     return `
                         <div class="product-card">
@@ -221,8 +241,8 @@
                                 ${p.description ? `<p class="product-description">${p.description}</p>` : ''}
                                 
                                 <div class="product-actions">
-                                    <button class="btn-cart" onclick="addToCart('${p.name}', '${p.price}', '${p.image}')">Add to Cart</button>
-                                    <button class="btn-quote" onclick="addToCart('${p.name}', '${p.price}', '${p.image}'); toggleCart();"><i class="fas fa-shopping-bag"></i> Buy Now</button>
+                                    <button class="btn-cart" onclick="addToCart('${p.id}', '${p.name}', '${p.price}', '${p.image}')">Add to Cart</button>
+                                    <button class="btn-quote" onclick="addToCart('${p.id}', '${p.name}', '${p.price}', '${p.image}'); toggleCart();"><i class="fas fa-shopping-bag"></i> Buy Now</button>
                                 </div>
                             </div>
                         </div>
