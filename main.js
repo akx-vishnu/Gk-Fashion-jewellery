@@ -10,6 +10,22 @@ const API_BASE = window.location.hostname === 'localhost' || window.location.hos
 let cart = JSON.parse(localStorage.getItem('gk_cart')) || [];
 let allProducts = []; // Store all products for filtering
 
+// SEO-optimised display labels for each product category
+const CATEGORY_LABELS = {
+    'Necklace': 'Necklace Jewellery',
+    'Earrings': 'Earrings Collection',
+    'Ring': 'Rings & Finger Rings',
+    'Bangle': 'Bangles & Bracelets',
+    'Bridal Collection': 'Bridal Jewellery Collection',
+    'Pendant with Earrings': 'Pendant with Earrings Set',
+    'Necklace with Earrings': 'Necklace & Earrings Set',
+};
+
+// Returns the SEO label for a category, falling back to the raw value
+function getCategoryLabel(cat) {
+    return CATEGORY_LABELS[cat] || cat;
+}
+
 function toggleMenu() {
     const navMenu = document.getElementById('nav-menu');
     const hamburgerIcon = document.querySelector('.hamburger i');
@@ -23,7 +39,7 @@ function toggleMenu() {
 function showToast(message, duration = 3000) {
     const container = document.getElementById('toast-container');
     if (!container) return;
-    
+
     const toast = document.createElement('div');
     toast.className = 'toast';
     toast.innerHTML = `<span class="toast-message">${message}</span>`;
@@ -183,6 +199,7 @@ async function fetchProducts(quiet = false) {
             return;
         }
 
+        updateCategoryFilter(products);
         syncCart(products);
 
         if (quiet) return; // Only syncing, don't re-render product grid
@@ -197,7 +214,7 @@ async function fetchProducts(quiet = false) {
             card.innerHTML = `
                 <img src="${imgSrc}" alt="${p.name}" loading="lazy">
                 <div class="product-details">
-                    <span class="product-category">${p.category}</span>
+                    <span class="product-category">${getCategoryLabel(p.category)}</span>
                     <h3>${p.name}</h3>
                     <p class="product-price">₹${Number(p.price).toLocaleString('en-IN')}</p>
                     ${p.description ? `<p class="product-description">${p.description}</p>` : ''}
@@ -211,7 +228,7 @@ async function fetchProducts(quiet = false) {
 
             // Image Error Handling
             const img = card.querySelector('img');
-            img.onerror = function() {
+            img.onerror = function () {
                 this.src = 'https://via.placeholder.com/300x300?text=Image+Not+Found';
                 this.parentElement.classList.add('image-error');
             };
@@ -224,21 +241,58 @@ async function fetchProducts(quiet = false) {
     }
 }
 
+// Called by static category cards in the Collections section
+function filterByCategory(categoryValue) {
+    const filter = document.getElementById('category-filter');
+    if (filter) {
+        filter.value = categoryValue;
+        filterProducts();
+    }
+}
+
 function filterProducts() {
     const searchTerm = document.getElementById('product-search').value.toLowerCase();
     const category = document.getElementById('category-filter').value;
     const container = document.getElementById('product-container');
-    
+
     if (!container) return;
 
     const filtered = allProducts.filter(p => {
-        const matchesSearch = p.name.toLowerCase().includes(searchTerm) || 
-                            (p.description && p.description.toLowerCase().includes(searchTerm));
+        const matchesSearch = p.name.toLowerCase().includes(searchTerm) ||
+            (p.description && p.description.toLowerCase().includes(searchTerm));
         const matchesCategory = category === 'all' || p.category === category;
         return matchesSearch && matchesCategory;
     });
 
     renderProducts(filtered);
+}
+
+function updateCategoryFilter(products) {
+    const filter = document.getElementById('category-filter');
+    if (!filter) return;
+
+    const currentSelection = filter.value;
+<<<<<<< HEAD
+
+    // All known categories (must match admin panel options)
+    const knownCategories = Object.keys(CATEGORY_LABELS);
+
+    // Merge known categories with any from products (in case new ones are added later)
+    const productCategories = products.map(p => p.category);
+    const allCategories = ['all', ...new Set([...knownCategories, ...productCategories])];
+
+    filter.innerHTML = allCategories.map(cat => `
+        <option value="${cat}" ${cat === currentSelection ? 'selected' : ''}>
+            ${cat === 'all' ? 'All Categories' : getCategoryLabel(cat)}
+=======
+    const categories = ['all', ...new Set(products.map(p => p.category))];
+    
+    filter.innerHTML = categories.map(cat => `
+        <option value="${cat}" ${cat === currentSelection ? 'selected' : ''}>
+            ${cat === 'all' ? 'All Categories' : cat}
+>>>>>>> b97bce8e576c6671b8361a80acc585a2d57c2009
+        </option>
+    `).join('');
 }
 
 function renderProducts(products) {
@@ -251,7 +305,7 @@ function renderProducts(products) {
     }
 
     container.innerHTML = '';
-    
+
     // Clear existing product structured data
     const oldScripts = document.querySelectorAll('script[data-type="product-ld"]');
     oldScripts.forEach(s => s.remove());
@@ -260,14 +314,14 @@ function renderProducts(products) {
         const card = document.createElement('div');
         card.className = 'product-card';
         const imgSrc = p.image.startsWith('http') ? p.image : `${API_BASE}${p.image}`;
-        
+
         // Dynamic Structured Data for each product
         const productLD = {
             "@context": "https://schema.org/",
             "@type": "Product",
             "name": p.name,
             "image": imgSrc,
-            "description": p.description || `${p.name} - Premium ${p.category} from GK Fashion Jewellery. Fast shipping to Kerala and across India.`,
+            "description": p.description || `${p.name} - Premium ${getCategoryLabel(p.category)} from GK Fashion Jewellery. Fast shipping to Kerala and across India.`,
             "brand": {
                 "@type": "Brand",
                 "name": "GK Fashion Jewellery"
@@ -280,7 +334,7 @@ function renderProducts(products) {
                 "availability": "https://schema.org/InStock",
                 "itemCondition": "https://schema.org/NewCondition"
             },
-            "category": p.category
+            "category": getCategoryLabel(p.category)
         };
         const ldScript = document.createElement('script');
         ldScript.type = "application/ld+json";
@@ -289,9 +343,9 @@ function renderProducts(products) {
         document.head.appendChild(ldScript);
 
         card.innerHTML = `
-            <img src="${imgSrc}" alt="${p.name} - ${p.category} | GK Fashion Jewellery Coimbatore" loading="lazy">
+            <img src="${imgSrc}" alt="${p.name} - ${getCategoryLabel(p.category)} | GK Fashion Jewellery Coimbatore" loading="lazy">
             <div class="product-details">
-                <span class="product-category">${p.category}</span>
+                <span class="product-category">${getCategoryLabel(p.category)}</span>
                 <h3>${p.name}</h3>
                 <p class="product-price">₹${Number(p.price).toLocaleString('en-IN')}</p>
                 ${p.description ? `<p class="product-description">${p.description}</p>` : ''}
@@ -304,7 +358,7 @@ function renderProducts(products) {
         `;
 
         const img = card.querySelector('img');
-        img.onerror = function() {
+        img.onerror = function () {
             this.src = 'https://via.placeholder.com/300x300?text=Image+Not+Found';
             this.parentElement.classList.add('image-error');
         };

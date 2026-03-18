@@ -3,5 +3,12 @@ Allow: /
 Disallow: /backend
 Disallow: /admin
 Disallow: /api
+Disallow: /.git
+Disallow: /node_modules
+
+User-agent: Googlebot
+Allow: /
+
+Crawl-delay: 2
 
 Sitemap: https://gk-fashion-jewellery.vercel.app/sitemap.xml
