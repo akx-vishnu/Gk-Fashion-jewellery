@@ -423,5 +423,11 @@
       }
     });
   </script>
+  <script type="module">
+    import { inject } from '/@vercel/analytics';
+    import { injectSpeedInsights } from '/@vercel/speed-insights';
+    inject();
+    injectSpeedInsights();
+  </script>
 </body>
 </html>

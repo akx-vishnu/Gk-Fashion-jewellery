@@ -29,15 +29,24 @@ if (!ADMIN_USER || !ADMIN_PASS) {
 }
 
 // Middleware
-app.use(helmet({
-  contentSecurityPolicy: false,
-}));
+app.use(helmet()); 
 
-const limiter = rateLimit({
+// Rate limiting
+const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, 
-  max: 100 
+  max: 100,
+  message: { error: 'Too many requests from this IP, please try again after 15 minutes' }
 });
-app.use(limiter);
+
+const adminLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 10, // max 10 attempts
+  message: { error: 'Too many login attempts, please try again after an hour' }
+});
+
+app.use('/products', generalLimiter);
+app.use('/login', adminLimiter);
+app.use('/upload', adminLimiter);
 
 app.use(cors());
 app.use(express.json());
@@ -83,6 +92,16 @@ app.post('/upload', upload.single('image'), async (req, res, next) => {
       return res.status(400).json({ error: 'Image is required' });
     }
 
+    // Basic Validation
+    if (!name || !price || !category) {
+      return res.status(400).json({ error: 'Name, price, and category are required' });
+    }
+
+    const priceNum = parseFloat(price);
+    if (isNaN(priceNum) || priceNum <= 0) {
+      return res.status(400).json({ error: 'Invalid price. Must be a positive number.' });
+    }
+
     const fileExt = req.file.originalname.split('.').pop();
     const fileName = `${Date.now()}.${fileExt}`;
     const filePath = `products/${fileName}`;
@@ -109,7 +128,13 @@ app.post('/upload', upload.single('image'), async (req, res, next) => {
     const { data: dbData, error: dbError } = await supabase
       .from('products')
       .insert([
-        { name, price: parseFloat(price), category, image: publicUrl, description: req.body.description || null }
+        { 
+          name: name.trim(), 
+          price: priceNum, 
+          category: category.trim(), 
+          image: publicUrl, 
+          description: req.body.description ? req.body.description.trim() : null 
+        }
       ])
       .select();
 
@@ -142,13 +167,18 @@ app.delete('/products/:id', async (req, res, next) => {
       try {
         // Extract file path from public URL safely
         const url = new URL(product.image);
-        // Supabase URLs usually look like .../public/product-images/products/123.jpg
-        const pathParts = url.pathname.split('/product-images/');
-        if (pathParts.length > 1) {
-          const filePath = pathParts[1];
+        // Robust extraction: find 'product-images' and get everything after it
+        const storageBucket = 'product-images';
+        const searchStr = `/${storageBucket}/`;
+        const index = url.pathname.indexOf(searchStr);
+        
+        if (index !== -1) {
+          const filePath = url.pathname.substring(index + searchStr.length);
           console.log(`Attempting to remove from storage: ${filePath}`);
-          const { error: storageError } = await supabase.storage.from('product-images').remove([filePath]);
+          const { error: storageError } = await supabase.storage.from(storageBucket).remove([filePath]);
           if (storageError) console.warn('Storage removal warning:', storageError);
+        } else {
+          console.warn('Could not reliably determine storage path from URL:', product.image);
         }
       } catch (urlErr) {
         console.warn('Could not parse image URL for storage cleanup, proceeding with DB deletion:', urlErr.message);

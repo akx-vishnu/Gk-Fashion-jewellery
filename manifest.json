@@ -1,0 +1,21 @@
+{
+  "name": "GK Fashion Jewellery",
+  "short_name": "GK Fashion",
+  "description": "Elegant and affordable artificial jewellery at your fingertips.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#C9A84C",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

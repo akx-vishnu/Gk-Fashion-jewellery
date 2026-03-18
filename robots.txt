@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /backend
+Disallow: /admin
+Disallow: /api
+
+Sitemap: https://gk-fashion-jewellery.vercel.app/sitemap.xml
