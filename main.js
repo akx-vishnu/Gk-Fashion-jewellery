@@ -247,6 +247,9 @@ function filterByCategory(categoryValue) {
     if (filter) {
         filter.value = categoryValue;
         filterProducts();
+    } else {
+        // On the home page (no filter element), redirect to the new-arrivals page
+        window.location.href = `new-arrivals.html?category=${encodeURIComponent(categoryValue)}`;
     }
 }
 
@@ -272,7 +275,6 @@ function updateCategoryFilter(products) {
     if (!filter) return;
 
     const currentSelection = filter.value;
-<<<<<<< HEAD
 
     // All known categories (must match admin panel options)
     const knownCategories = Object.keys(CATEGORY_LABELS);
@@ -284,13 +286,6 @@ function updateCategoryFilter(products) {
     filter.innerHTML = allCategories.map(cat => `
         <option value="${cat}" ${cat === currentSelection ? 'selected' : ''}>
             ${cat === 'all' ? 'All Categories' : getCategoryLabel(cat)}
-=======
-    const categories = ['all', ...new Set(products.map(p => p.category))];
-    
-    filter.innerHTML = categories.map(cat => `
-        <option value="${cat}" ${cat === currentSelection ? 'selected' : ''}>
-            ${cat === 'all' ? 'All Categories' : cat}
->>>>>>> b97bce8e576c6671b8361a80acc585a2d57c2009
         </option>
     `).join('');
 }
@@ -417,8 +412,24 @@ function initCustomCursor() {
 }
 
 // Global initialization
-window.addEventListener('DOMContentLoaded', () => {
-    fetchProducts();
+window.addEventListener('DOMContentLoaded', async () => {
     updateCartCount();
     initCustomCursor();
+
+    // Only fetch and render products on pages that have the product container
+    const productContainer = document.getElementById('product-container');
+    if (productContainer) {
+        await fetchProducts();
+
+        // Apply category filter from URL parameter (e.g. ?category=Necklace)
+        const urlParams = new URLSearchParams(window.location.search);
+        const categoryParam = urlParams.get('category');
+        if (categoryParam) {
+            const filter = document.getElementById('category-filter');
+            if (filter) {
+                filter.value = categoryParam;
+                filterProducts();
+            }
+        }
+    }
 });

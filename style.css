@@ -11,6 +11,41 @@
     --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
     --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.05);
     --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.1);
+    --header-height: 92px;
+}
+
+/* Breadcrumb Navigation */
+.breadcrumb {
+    padding-top: 1.5rem;
+    padding-bottom: 0;
+    font-size: 0.9rem;
+    color: #888;
+}
+
+.breadcrumb a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.breadcrumb a:hover {
+    color: var(--accent-color);
+    text-decoration: underline;
+}
+
+.breadcrumb-separator {
+    margin: 0 0.5rem;
+    color: #ccc;
+}
+
+.breadcrumb-current {
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+/* Active Nav Link */
+.active-link {
+    color: var(--primary-color) !important;
 }
 
 * {
@@ -127,6 +162,8 @@ nav {
     display: flex;
     gap: 2.5rem;
     align-items: center;
+    margin-left: auto;
+    margin-right: 2.5rem;
 }
 
 .nav-links li a {
@@ -159,13 +196,18 @@ nav {
     color: #C9A84C;
 }
 
-.cart-icon {
-    margin-left: 1rem;
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    position: relative;
+    z-index: 1010;
 }
 
 /* Hero Section */
 .hero {
-    height: 100vh;
+    height: calc(100vh - var(--header-height));
+    min-height: 500px;
     background: linear-gradient(rgba(30, 20, 10, 0.45), rgba(30, 20, 10, 0.55)), url('https://images.unsplash.com/photo-1598560917505-59a3ad559071?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
     display: flex;
     justify-content: center;
@@ -278,9 +320,10 @@ nav {
 
 /* Categories Section */
 .category-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: 2rem;
+    justify-content: center;
 }
 
 .category-card {
@@ -290,6 +333,8 @@ nav {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     transition: var(--transition);
     cursor: pointer;
+    flex: 1 1 300px;
+    max-width: 380px;
 }
 
 .category-card:hover {
@@ -974,6 +1019,7 @@ footer {
         z-index: 1001;
         display: flex;
         backdrop-filter: blur(10px);
+        margin: 0;
     }
 
     .nav-links li a {
@@ -990,8 +1036,11 @@ footer {
     }
 
     .cart-icon {
-        margin-left: 0;
-        margin-top: 1rem;
+        margin: 0;
+    }
+
+    .header-actions {
+        gap: 0.8rem;
     }
 
     .hamburger {
