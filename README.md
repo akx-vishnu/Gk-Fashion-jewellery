@@ -12,8 +12,13 @@ A premium, high-performance e-commerce web application for artificial jewellery.
 - **📱 Advanced Mobile-First Design**: Fully optimized responsive layout with hamburger navigation, `100svh` hero, 2-column product grid, and small-phone breakpoint support.
 - **🛒 Smart Shopping Cart**: Real-time total calculation with persistent localStorage state and automatic product sync.
 - **📲 WhatsApp Checkout**: Generates detailed itemized quotes sent directly to `+91 94877 24818`.
-- **🛠️ Admin Dashboard**: Secure interface for product management (name, price, category, description) with cloud-based Supabase image storage.
-- **🎨 Polished Interactions**: Gold hover underline animations on nav links, gradient hero-to-section fade, custom animated cursor, and toast notifications.
+- **🛠️ Advanced Admin Dashboard**: Secure management of products (name, price, category, description) with:
+  - **Soft Delete**: Move items to "Recently Removed" section for temporary archival.
+  - **Bulk Actions**: Select multiple removed items for restoration or permanent deletion.
+  - **Security**: Password-protected permanent deletion for increased safety.
+  - **Custom Notification System**: Transition-based in-app toasts and modal dialogs replacing native browser alerts.
+  - **PWA Ready**: Installable as a standalone app on mobile (GK Admin).
+- **🎨 Polished Interactions**: Gold hover underline animations, gradient hero-to-section fade, custom animated cursor, and success/error toasts.
 - **🚀 Optimized Performance**: Refined CSS with centralized design tokens, zero layout shifts, and SEO-friendly structure.
 
 ## 🛠️ Technology Stack
@@ -56,7 +61,8 @@ create table products (
   price numeric not null,
   category text,
   description text,
-  image text
+  image text,
+  deleted_at timestamptz default null
 );
 ```
 Create a **Public** storage bucket named `product-images`.

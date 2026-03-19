@@ -76,7 +76,23 @@ app.get('/products', async (req, res, next) => {
     const { data, error } = await supabase
       .from('products')
       .select('*')
+      .is('deleted_at', null)
       .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    res.json(data);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get('/products/removed', async (req, res, next) => {
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .not('deleted_at', 'is', null)
+      .order('deleted_at', { ascending: false });
 
     if (error) throw error;
     res.json(data);
@@ -153,50 +169,81 @@ app.delete('/products/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
     
-    // Get product to find image path
-    const { data: product, error: fetchError } = await supabase
+    const { error } = await supabase
+      .from('products')
+      .update({ deleted_at: new Date().toISOString() })
+      .eq('id', id);
+
+    if (error) throw error;
+    res.json({ message: 'Product moved to Removed section' });
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post('/products/:id/restore', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { error } = await supabase
+      .from('products')
+      .update({ deleted_at: null })
+      .eq('id', id);
+
+    if (error) throw error;
+    res.json({ message: 'Product restored successfully' });
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post('/products/bulk-delete', async (req, res, next) => {
+  try {
+    const { ids, password } = req.body;
+    
+    if (password !== ADMIN_PASS) {
+      return res.status(401).json({ error: 'Incorrect security password' });
+    }
+
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ error: 'No product IDs provided' });
+    }
+
+    // Get products to find image paths for cleanup
+    const { data: products, error: fetchError } = await supabase
       .from('products')
       .select('image')
-      .eq('id', id)
-      .single();
+      .in('id', ids);
 
     if (fetchError) throw fetchError;
 
-    if (product && product.image) {
-      console.log(`Found product for deletion. Image URL: ${product.image}`);
-      try {
-        // Extract file path from public URL safely
-        const url = new URL(product.image);
-        // Robust extraction: find 'product-images' and get everything after it
-        const storageBucket = 'product-images';
-        const searchStr = `/${storageBucket}/`;
-        const index = url.pathname.indexOf(searchStr);
-        
-        if (index !== -1) {
-          const filePath = url.pathname.substring(index + searchStr.length);
-          console.log(`Attempting to remove from storage: ${filePath}`);
-          const { error: storageError } = await supabase.storage.from(storageBucket).remove([filePath]);
-          if (storageError) console.warn('Storage removal warning:', storageError);
-        } else {
-          console.warn('Could not reliably determine storage path from URL:', product.image);
+    // Cleanup storage
+    for (const product of products) {
+      if (product.image) {
+        try {
+          const url = new URL(product.image);
+          const storageBucket = 'product-images';
+          const searchStr = `/${storageBucket}/`;
+          const index = url.pathname.indexOf(searchStr);
+          
+          if (index !== -1) {
+            const filePath = url.pathname.substring(index + searchStr.length);
+            await supabase.storage.from(storageBucket).remove([filePath]);
+          }
+        } catch (urlErr) {
+          console.warn('Could not parse image URL for storage cleanup:', urlErr.message);
         }
-      } catch (urlErr) {
-        console.warn('Could not parse image URL for storage cleanup, proceeding with DB deletion:', urlErr.message);
       }
-
-      const { error: deleteError } = await supabase
-        .from('products')
-        .delete()
-        .eq('id', id);
-
-      if (deleteError) {
-        console.error('Database Delete Error:', deleteError);
-        throw deleteError;
-      }
-      res.json({ message: 'Product deleted successfully' });
-    } else {
-      res.status(404).json({ error: 'Product not found' });
     }
+
+    // Final permanent delete from DB
+    const { error: deleteError } = await supabase
+      .from('products')
+      .delete()
+      .in('id', ids);
+
+    if (deleteError) throw deleteError;
+
+    res.json({ message: `${ids.length} pieces permanently removed from archive` });
   } catch (err) {
     next(err);
   }

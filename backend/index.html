@@ -3,8 +3,17 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>GK FASHION JEWELLERY — Admin</title>
+  
+  <!-- PWA Meta Tags -->
+  <link rel="manifest" href="/backend/admin.manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="GK Admin">
+  <link rel="apple-touch-icon" href="/logo.png">
+  <meta name="theme-color" content="#0E0D0C">
+
   <link rel="icon" type="image/png" sizes="32x32" href="/logo.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/logo.png">
   <link
@@ -21,6 +30,7 @@
       --text: #EDE8E1;
       --muted: #7A7269;
       --danger: #ff4d4d;
+      --success: #4CAF50;
     }
 
     *,
@@ -38,6 +48,7 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow-x: hidden;
     }
 
     /* Noise & Glow background effect */
@@ -57,7 +68,7 @@
       padding: 50px 40px;
       border: 1px solid var(--border);
       border-radius: 8px;
-      width: 100%;
+      width: 90%;
       max-width: 420px;
       position: relative;
       z-index: 10;
@@ -84,7 +95,7 @@
       width: 100%;
       max-width: 1300px;
       margin: 0 auto;
-      padding: 40px 30px;
+      padding: 40px 20px;
       position: relative;
       z-index: 10;
     }
@@ -105,7 +116,8 @@
     }
 
     input,
-    select {
+    select,
+    textarea {
       width: 100%;
       padding: 14px 16px;
       background: var(--surface2);
@@ -116,6 +128,7 @@
       font-size: 15px;
       outline: none;
       transition: all 0.3s ease;
+      min-height: 48px; /* For touch targets */
     }
 
     select option {
@@ -124,7 +137,8 @@
     }
 
     input:focus,
-    select:focus {
+    select:focus,
+    textarea:focus {
       border-color: var(--gold);
       background: rgba(200, 169, 126, 0.05);
       box-shadow: 0 0 0 1px var(--gold);
@@ -132,7 +146,8 @@
 
     button {
       width: 100%;
-      padding: 16px;
+      min-height: 48px; /* Better tap target */
+      padding: 12px 16px;
       background: var(--gold);
       border: 1px solid var(--gold);
       color: var(--bg);
@@ -144,6 +159,9 @@
       text-transform: uppercase;
       border-radius: 4px;
       transition: all 0.4s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     button:hover {
@@ -155,15 +173,28 @@
       background: var(--danger);
       border-color: var(--danger);
       color: white;
-      padding: 8px 20px;
+      padding: 8px 15px;
       font-size: 10px;
       margin-top: 15px;
       width: auto;
+      min-height: 38px;
     }
 
-    .btn-delete:hover {
+    .btn-restore {
+      background: var(--success);
+      border-color: var(--success);
+      color: white;
+      padding: 8px 15px;
+      font-size: 10px;
+      margin-top: 15px;
+      width: auto;
+      min-height: 38px;
+    }
+
+    .btn-secondary {
       background: transparent;
-      color: var(--danger);
+      border-color: var(--muted);
+      color: var(--text);
     }
 
     .hidden {
@@ -177,15 +208,9 @@
       margin-top: 40px;
     }
 
-    @media (max-width: 900px) {
-      .dashboard-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
     .panel {
       background: var(--surface);
-      padding: 35px;
+      padding: 30px;
       border: 1px solid var(--border);
       border-radius: 8px;
     }
@@ -206,7 +231,8 @@
       flex-direction: column;
       align-items: center;
       text-align: center;
-      transition: transform 0.3s ease;
+      transition: all 0.3s ease;
+      position: relative;
     }
 
     .inventory-item:hover {
@@ -230,10 +256,21 @@
       margin-bottom: 5px;
     }
 
-    #inventory-grid {
+    #inventory-grid, #removed-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
       gap: 25px;
+    }
+
+    .item-checkbox {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      z-index: 5;
+      accent-color: var(--gold);
     }
 
     header {
@@ -249,7 +286,188 @@
     hr {
       border: 0;
       border-top: 1px solid var(--border);
-      margin: 20px 0;
+      margin: 40px 0;
+    }
+
+    /* Bulk Actions Bar */
+    #bulk-actions-bar {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--surface2);
+      border: 1px solid var(--gold);
+      padding: 15px 30px;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      z-index: 1000;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    #bulk-actions-bar.active {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .bulk-count {
+      color: var(--gold);
+      font-weight: 600;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .btn-clear {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 12px;
+      padding: 5px;
+      transition: color 0.3s;
+      min-height: unset;
+      width: auto;
+    }
+
+    .btn-clear:hover {
+      color: var(--text);
+    }
+
+    .btn-bulk-delete {
+      background: var(--danger);
+      color: white;
+      border-radius: 20px;
+      padding: 8px 20px;
+      width: auto;
+      min-height: unset;
+    }
+
+    /* Toast System */
+    #toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 320px;
+    }
+
+    .toast {
+      background: var(--surface2);
+      border-left: 4px solid var(--gold);
+      padding: 16px 20px;
+      border-radius: 4px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      color: white;
+      transform: translateX(400px);
+      transition: transform 0.4s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .toast.active {
+      transform: translateX(0);
+    }
+
+    .toast.success { border-color: var(--success); }
+    .toast.error { border-color: var(--danger); }
+
+    /* Modal System */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 3000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 40px;
+      border-radius: 8px;
+      max-width: 450px;
+      width: 90%;
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+
+    .modal-overlay.active .modal {
+      transform: scale(1);
+    }
+
+    .modal h3 {
+      font-size: 1.8rem;
+      color: var(--gold-light);
+      margin-bottom: 20px;
+    }
+
+    .modal p {
+      color: var(--muted);
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 15px;
+    }
+
+    /* Mobile Adjustments */
+    @media (max-width: 900px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+      #login-container {
+        padding: 30px 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      #inventory-grid, #removed-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+      }
+      .inventory-item {
+        padding: 10px;
+      }
+      .inventory-item img {
+        height: 120px;
+      }
+      .inventory-item strong {
+        font-size: 1rem;
+      }
+      header h1 {
+        font-size: 2rem;
+      }
+      #bulk-actions-bar {
+        width: 90%;
+        border-radius: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 15px;
+        bottom: 20px;
+      }
+      #toast-container {
+        width: calc(100% - 40px);
+        left: 20px;
+        right: 20px;
+      }
     }
   </style>
 </head>
@@ -258,6 +476,9 @@
 
   <!-- Login Form -->
   <div id="login-container">
+    <div style="text-align: center; margin-bottom: 20px;">
+        <img src="/logo.png" alt="GK" style="width: 80px; height: auto;">
+    </div>
     <h2>Admin Login</h2>
     <form id="loginForm">
       <div class="input-group">
@@ -307,8 +528,7 @@
           </div>
           <div class="input-group">
             <label>Product Description (Optional)</label>
-            <textarea id="description" placeholder="Enter product details, materials, or story..."
-              style="width: 100%; padding: 14px 16px; background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; color: #fff; font-family: 'Jost', sans-serif; font-size: 15px; outline: none; transition: all 0.3s ease; resize: vertical; min-height: 100px;"></textarea>
+            <textarea id="description" placeholder="Enter product details..."></textarea>
           </div>
           <div class="input-group">
             <label>Product Visual (Image)</label>
@@ -318,106 +538,178 @@
         </form>
       </div>
       <div id="products-list">
+        <!-- Active Inventory -->
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 30px;">
           <h3 style="font-size: 1.8rem;">Current Inventory</h3>
           <span id="item-count" style="font-size: 12px; color: var(--muted); letter-spacing: 1px;">0 ITEMS</span>
         </div>
         <div id="inventory-grid"></div>
+
+        <hr>
+
+        <!-- Recently Removed -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 30px;">
+          <h3 style="font-size: 1.8rem; color: var(--muted);">Recently Removed</h3>
+          <span id="removed-count" style="font-size: 12px; color: var(--muted); letter-spacing: 1px;">0 ARCHIVED</span>
+        </div>
+        <div id="removed-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bulk Actions Bar -->
+  <div id="bulk-actions-bar">
+    <button class="btn-clear" onclick="clearSelection()">✕ Clear</button>
+    <div class="bulk-count"><span id="selected-count">1</span> Selected</div>
+    <button class="btn-bulk-delete" onclick="triggerPermanentDelete()">Permanent Delete</button>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <!-- Modal Container -->
+  <div id="modal-overlay" class="modal-overlay">
+    <div id="modal" class="modal">
+      <h3 id="modal-title">Confirm Action</h3>
+      <p id="modal-body">Are you sure?</p>
+      <div id="modal-input-container" class="hidden" style="margin-bottom: 25px;">
+        <input type="password" id="modal-input" placeholder="Enter security password">
+        <p id="modal-error" style="color: var(--danger); font-size: 12px; margin-top: 5px;" class="hidden"></p>
+      </div>
+      <div class="modal-actions">
+        <button id="modal-cancel" class="btn-secondary">Cancel</button>
+        <button id="modal-confirm">Confirm</button>
       </div>
     </div>
   </div>
 
   <script>
-    const API_BASE = ''; // Use relative paths for same-origin requests
+    const API_BASE = '';
     const loginForm = document.getElementById('loginForm');
     const uploadForm = document.getElementById('uploadForm');
     const loginContainer = document.getElementById('login-container');
     const dashboard = document.getElementById('admin-dashboard');
+    
+    let selectedIds = new Set();
 
+    /* PWA Registration */
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/backend/admin-sw.js').then(reg => {
+          console.log('Admin SW Registered');
+        }).catch(err => console.log('SW Reg failed', err));
+      });
+    }
+
+    /* UI Logic - Auth */
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const response = await fetch(`${API_BASE}/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: document.getElementById('loginEmail').value,
-          password: document.getElementById('loginPass').value
-        })
-      });
-      if (response.ok) {
-        loginContainer.classList.add('hidden');
-        dashboard.style.display = 'block';
-        document.body.style.display = 'block'; // Reset flex for dashboard
-        fetchInventory();
-      } else {
-        alert("Authentication Failed: Invalid credentials.");
+      try {
+        const response = await fetch(`${API_BASE}/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: document.getElementById('loginEmail').value,
+            password: document.getElementById('loginPass').value
+          })
+        });
+        if (response.ok) {
+          loginContainer.classList.add('hidden');
+          dashboard.style.display = 'block';
+          document.body.style.display = 'block';
+          showToast("Access Granted. Welcome back.", "success");
+          refreshAll();
+        } else {
+          showToast("Authentication Failed. Check credentials.", "error");
+        }
+      } catch(e) {
+        showToast("Network Error during login.", "error");
       }
     });
 
-    async function fetchInventory() {
+    /* UI Logic - Fetching */
+    async function fetchActive() {
       try {
-        const response = await fetch(`${API_BASE}/products`);
-        const products = await response.json();
+        const res = await fetch(`${API_BASE}/products`);
+        const data = await res.json();
         const grid = document.getElementById('inventory-grid');
-        document.getElementById('item-count').innerText = `${products.length} ${products.length === 1 ? 'ITEM' : 'ITEMS'}`;
-
-        if (products.length === 0) {
-          grid.innerHTML = '<div style="grid-column: 1/-1; padding: 50px; text-align: center; color: var(--muted); border: 1px dashed var(--border);">No products in inventory.</div>';
+        document.getElementById('item-count').innerText = `${data.length} ${data.length === 1 ? 'PIECE' : 'PIECES'}`;
+        
+        if (data.length === 0) {
+          grid.innerHTML = '<div style="grid-column: 1/-1; padding: 40px; text-align: center; color: var(--muted); border: 1px dashed var(--border);">Active inventory is empty.</div>';
           return;
         }
 
-        grid.innerHTML = products.map(p => `
-                <div class="inventory-item">
-                    <img src="${API_BASE}${p.image}" alt="${p.name}">
-                    <strong>${p.name}</strong>
-                    <p style="color: var(--gold-light); font-weight: 500;">₹${Number(p.price).toLocaleString('en-IN')}</p>
-                    ${p.description ? `<p style="font-size: 11px; color: var(--muted); margin-top: 5px; line-height: 1.4;">${p.description}</p>` : ''}
-                    <button class="btn-delete" data-id="${p.id}">Delete Piece</button>
-                </div>
-            `).join('');
-      } catch (err) {
-        console.error('Fetch inventory error:', err);
-      }
+        grid.innerHTML = data.map(p => `
+          <div class="inventory-item">
+            <img src="${p.image}" alt="${p.name}" loading="lazy">
+            <strong>${p.name}</strong>
+            <p style="color: var(--gold-light); font-weight: 500;">₹${Number(p.price).toLocaleString('en-IN')}</p>
+            <button class="btn-delete" onclick="softDelete('${p.id}')">Delete Piece</button>
+          </div>
+        `).join('');
+      } catch (err) { console.error(err); }
     }
 
-    // Event delegation for delete buttons
-    document.getElementById('inventory-grid').addEventListener('click', (e) => {
-      if (e.target.classList.contains('btn-delete')) {
-        const id = e.target.getAttribute('data-id');
-        deleteProduct(id);
-      }
-    });
-
-    async function deleteProduct(id) {
-      if (!confirm("Remove this piece from the inventory?")) return;
-      console.log(`Attempting to delete product with ID: ${id}`);
+    async function fetchRemoved() {
       try {
-        const response = await fetch(`${API_BASE}/products/${id}`, {
-          method: 'DELETE',
-          headers: { 'Content-Type': 'application/json' }
-        });
-        if (response.ok) {
-          console.log('Delete successful on server');
-          // Immediately update local UI by re-fetching
-          await fetchInventory();
-        } else {
-          const errData = await response.json();
-          console.error('Server rejected delete:', errData);
-          alert("Delete operation failed: " + (errData.error || "Server error"));
+        const res = await fetch(`${API_BASE}/products/removed`);
+        const data = await res.json();
+        const grid = document.getElementById('removed-grid');
+        document.getElementById('removed-count').innerText = `${data.length} ARCHIVED`;
+        
+        if (data.length === 0) {
+          grid.innerHTML = '<div style="grid-column: 1/-1; padding: 40px; text-align: center; color: var(--muted); border: 1px dashed var(--border);">No archived pieces.</div>';
+          return;
         }
-      } catch (err) {
-        console.error('Detailed Delete Error:', err);
-        alert("A network error occurred. Please check your internet or Vercel logs.");
-      }
+
+        grid.innerHTML = data.map(p => `
+          <div class="inventory-item">
+            <input type="checkbox" class="item-checkbox" ${selectedIds.has(p.id) ? 'checked' : ''} onchange="toggleSelect('${p.id}')">
+            <img src="${p.image}" alt="${p.name}" loading="lazy">
+            <strong>${p.name}</strong>
+            <p style="color: var(--muted); font-size: 12px;">Archived</p>
+            <button class="btn-restore" onclick="restoreProduct('${p.id}')">Restore Piece</button>
+          </div>
+        `).join('');
+      } catch (err) { console.error(err); }
+    }
+
+    function refreshAll() {
+      fetchActive();
+      fetchRemoved();
+      updateBulkBar();
+    }
+
+    /* Actions */
+    async function softDelete(id) {
+      try {
+        const res = await fetch(`${API_BASE}/products/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+          showToast("Piece moved to archive.", "success");
+          refreshAll();
+        }
+      } catch(e) { showToast("Failed to archive item.", "error"); }
+    }
+
+    async function restoreProduct(id) {
+      try {
+        const res = await fetch(`${API_BASE}/products/${id}/restore`, { method: 'POST' });
+        if (res.ok) {
+          showToast("Piece restored to inventory.", "success");
+          refreshAll();
+        }
+      } catch(e) { showToast("Failed to restore item.", "error"); }
     }
 
     uploadForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const submitBtn = uploadForm.querySelector('button');
-      submitBtn.innerText = "PUBLISHING...";
-      submitBtn.disabled = true;
+      const btn = uploadForm.querySelector('button');
+      btn.innerText = "PUBLISHING...";
+      btn.disabled = true;
 
-      const formData = new FormData();
+      const formData = new FormData(uploadForm);
+      // Ensure all fields are added if not using names on inputs
       formData.append('name', document.getElementById('name').value);
       formData.append('price', document.getElementById('price').value);
       formData.append('category', document.getElementById('category').value);
@@ -425,30 +717,148 @@
       formData.append('image', document.getElementById('image').files[0]);
 
       try {
-        const response = await fetch(`${API_BASE}/upload`, { method: 'POST', body: formData });
-        const result = await response.json();
-
-        if (response.ok) {
+        const res = await fetch(`${API_BASE}/upload`, { method: 'POST', body: formData });
+        if (res.ok) {
+          showToast("Product Published Successfully!", "success");
           uploadForm.reset();
-          fetchInventory();
-          alert("Product Published Successfully!");
+          refreshAll();
         } else {
-          alert(`Upload failed: ${result.message || result.error || 'Check server logs'}`);
+          const err = await res.json();
+          showToast(err.error || "Upload failed.", "error");
         }
-      } catch (err) {
-        alert("A network error occurred. Please check your connection.");
-      } finally {
-        submitBtn.innerText = "PUBLISH PRODUCT";
-        submitBtn.disabled = false;
+      } catch (e) { showToast("Network error during upload.", "error"); }
+      finally {
+        btn.innerText = "PUBLISH PRODUCT";
+        btn.disabled = false;
       }
     });
-  </script>
-  <script type="module">
-    import { inject } from '/@vercel/analytics';
-    import { injectSpeedInsights } from '/@vercel/speed-insights';
-    inject();
-    injectSpeedInsights();
+
+    /* Bulk Logic */
+    function toggleSelect(id) {
+      if (selectedIds.has(id)) selectedIds.delete(id);
+      else selectedIds.add(id);
+      updateBulkBar();
+    }
+
+    function updateBulkBar() {
+      const bar = document.getElementById('bulk-actions-bar');
+      const countEl = document.getElementById('selected-count');
+      if (selectedIds.size > 0) {
+        bar.classList.add('active');
+        countEl.innerText = selectedIds.size;
+      } else {
+        bar.classList.remove('active');
+      }
+    }
+
+    function clearSelection() {
+      selectedIds.clear();
+      document.querySelectorAll('.item-checkbox').forEach(cb => cb.checked = false);
+      updateBulkBar();
+    }
+
+    async function triggerPermanentDelete() {
+      const count = selectedIds.size;
+      showModal({
+        title: "Permanent Removal",
+        body: `You are about to permanently delete ${count} archived pieces. This action cannot be undone. Enter security password to confirm:`,
+        isPrompt: true,
+        confirmLabel: "Remove Permanently",
+        onConfirm: async (password) => {
+          try {
+            const res = await fetch(`${API_BASE}/products/bulk-delete`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ ids: Array.from(selectedIds), password })
+            });
+            const data = await res.json();
+            if (res.ok) {
+              showToast(data.message, "success");
+              selectedIds.clear();
+              refreshAll();
+              return true; // Close modal
+            } else {
+              document.getElementById('modal-error').innerText = data.error;
+              document.getElementById('modal-error').classList.remove('hidden');
+              return false; // Keep modal open
+            }
+          } catch(e) {
+            showToast("Network error during bulk delete.", "error");
+            return false;
+          }
+        }
+      });
+    }
+
+    /* Toast System */
+    function showToast(msg, type = 'gold') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `<span>${msg}</span>`;
+      container.appendChild(toast);
+      
+      requestAnimationFrame(() => toast.classList.add('active'));
+      
+      setTimeout(() => {
+        toast.classList.remove('active');
+        setTimeout(() => toast.remove(), 400);
+      }, 3500);
+    }
+
+    /* Modal System */
+    let activeModalPromise = null;
+    function showModal({ title, body, isPrompt, confirmLabel, onConfirm }) {
+      const overlay = document.getElementById('modal-overlay');
+      const titleEl = document.getElementById('modal-title');
+      const bodyEl = document.getElementById('modal-body');
+      const inputCont = document.getElementById('modal-input-container');
+      const input = document.getElementById('modal-input');
+      const confirmBtn = document.getElementById('modal-confirm');
+      const cancelBtn = document.getElementById('modal-cancel');
+      const errorEl = document.getElementById('modal-error');
+
+      titleEl.innerText = title;
+      bodyEl.innerText = body;
+      confirmBtn.innerText = confirmLabel || "Confirm";
+      errorEl.classList.add('hidden');
+      input.value = "";
+      
+      if (isPrompt) inputCont.classList.remove('hidden');
+      else inputCont.classList.add('hidden');
+
+      overlay.classList.add('active');
+
+      return new Promise((resolve) => {
+        const close = () => {
+          overlay.classList.remove('active');
+          confirmBtn.onclick = null;
+          cancelBtn.onclick = null;
+        };
+
+        confirmBtn.onclick = async () => {
+          const result = await onConfirm(isPrompt ? input.value : true);
+          if (result !== false) {
+            close();
+            resolve(true);
+          }
+        };
+
+        cancelBtn.onclick = () => {
+          close();
+          resolve(false);
+        };
+      });
+    }
+
+    // Replace native dialogs
+    window.alert = (msg) => showToast(msg);
+    window.confirm = (msg) => {
+        // Since window.confirm is synchronous and we can't make it so with custom DOM,
+        // we should avoid using it or refactor callers. 
+        // For this task, I've already refactored the delete logic.
+        console.warn("Native confirm() called. Use showModal instead.");
+    };
   </script>
 </body>
-
 </html>
