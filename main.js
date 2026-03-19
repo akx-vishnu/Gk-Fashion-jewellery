@@ -9,6 +9,8 @@ const API_BASE = window.location.hostname === 'localhost' || window.location.hos
 
 let cart = JSON.parse(localStorage.getItem('gk_cart')) || [];
 let allProducts = []; // Store all products for filtering
+let lastFetchTime = 0;
+const CACHE_DURATION = 120000; // 2 minutes cache
 
 // SEO-optimised display labels for each product category
 const CATEGORY_LABELS = {
@@ -190,51 +192,27 @@ async function fetchProducts(quiet = false) {
     if (!container) return;
 
     try {
-        const response = await fetch(`${API_BASE}/products`);
-        const products = await response.json();
-        allProducts = products; // Store for filtering
+        if (quiet && allProducts.length > 0) return; // Only syncing, don't re-render if we have cache
 
-        if (!products || products.length === 0) {
-            if (!quiet) container.innerHTML = '<p>Check back soon for new arrivals!</p>';
+        const now = Date.now();
+        if (!quiet && allProducts.length > 0 && (now - lastFetchTime < CACHE_DURATION)) {
+            renderProducts(allProducts);
             return;
         }
+
+        const response = await fetch(`${API_BASE}/products`);
+        const products = await response.json();
+        allProducts = products;
+        lastFetchTime = Date.now();
 
         updateCategoryFilter(products);
         syncCart(products);
 
-        if (quiet) return; // Only syncing, don't re-render product grid
+        if (quiet) return;
 
         // Clear skeletons
         container.innerHTML = '';
-
-        products.forEach(p => {
-            const card = document.createElement('div');
-            card.className = 'product-card';
-            const imgSrc = p.image.startsWith('http') ? p.image : `${API_BASE}${p.image}`;
-            card.innerHTML = `
-                <img src="${imgSrc}" alt="${p.name}" loading="lazy">
-                <div class="product-details">
-                    <span class="product-category">${getCategoryLabel(p.category)}</span>
-                    <h3>${p.name}</h3>
-                    <p class="product-price">₹${Number(p.price).toLocaleString('en-IN')}</p>
-                    ${p.description ? `<p class="product-description">${p.description}</p>` : ''}
-                    
-                    <div class="product-actions">
-                        <button class="btn-cart" onclick="addToCart('${p.id}', '${p.name}', '${p.price}', '${p.image}')">Add to Cart</button>
-                        <button class="btn-quote" onclick="addToCart('${p.id}', '${p.name}', '${p.price}', '${p.image}'); toggleCart();"><i class="fas fa-shopping-bag"></i> Buy Now</button>
-                    </div>
-                </div>
-            `;
-
-            // Image Error Handling
-            const img = card.querySelector('img');
-            img.onerror = function () {
-                this.src = 'https://via.placeholder.com/300x300?text=Image+Not+Found';
-                this.parentElement.classList.add('image-error');
-            };
-
-            container.appendChild(card);
-        });
+        renderProducts(products);
     } catch (err) {
         console.error('Failed to fetch products:', err);
         container.innerHTML = '<p>Unable to load products. Please refresh the page.</p>';
@@ -305,10 +283,14 @@ function renderProducts(products) {
     const oldScripts = document.querySelectorAll('script[data-type="product-ld"]');
     oldScripts.forEach(s => s.remove());
 
-    products.forEach(p => {
+    products.forEach((p, index) => {
         const card = document.createElement('div');
         card.className = 'product-card';
         const imgSrc = p.image.startsWith('http') ? p.image : `${API_BASE}${p.image}`;
+        
+        // Priority loading for top products
+        const priorityAttr = index < 3 ? 'fetchpriority="high"' : '';
+        const loadingAttr = index < 3 ? 'eager' : 'lazy';
 
         // Dynamic Structured Data for each product
         const productLD = {
@@ -338,7 +320,7 @@ function renderProducts(products) {
         document.head.appendChild(ldScript);
 
         card.innerHTML = `
-            <img src="${imgSrc}" alt="${p.name} - ${getCategoryLabel(p.category)} | GK Fashion Jewellery Coimbatore" loading="lazy">
+            <img src="${imgSrc}" alt="${p.name} - ${getCategoryLabel(p.category)} | GK Fashion Jewellery Coimbatore" loading="${loadingAttr}" ${priorityAttr}>
             <div class="product-details">
                 <span class="product-category">${getCategoryLabel(p.category)}</span>
                 <h3>${p.name}</h3>

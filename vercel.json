@@ -27,6 +27,24 @@
       ]
     },
     {
+      "source": "/products",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "s-maxage=60, stale-while-revalidate=300"
+        }
+      ]
+    },
+    {
+      "source": "/products/removed",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "s-maxage=60, stale-while-revalidate=300"
+        }
+      ]
+    },
+    {
       "source": "/(.*).(jpg|jpeg|png|gif|svg|webp|avif|ico|css|js)",
       "headers": [
         {
