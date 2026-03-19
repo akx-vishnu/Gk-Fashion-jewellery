@@ -502,11 +502,11 @@ nav {
     margin-bottom: 50px;
     justify-content: center;
     flex-wrap: wrap;
-    background: #fcfcfc;
+    background: #ffffff;
     padding: 30px;
     border-radius: 20px;
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(201, 168, 76, 0.15);
+    border: 2px solid var(--primary-color);
     position: relative;
     margin-top: -60px;
     z-index: 10;
@@ -534,6 +534,8 @@ nav {
     font-family: inherit;
     transition: var(--transition);
     outline: none;
+    background: #fff;
+    color: var(--text-color);
 }
 
 .search-box input:focus {
@@ -550,6 +552,7 @@ nav {
     background: #fff;
     outline: none;
     transition: var(--transition);
+    color: var(--text-color);
 }
 
 #category-filter:focus {
