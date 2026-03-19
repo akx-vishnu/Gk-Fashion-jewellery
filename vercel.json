@@ -54,6 +54,13 @@
       ]
     }
   ],
+  "redirects": [
+    {
+      "source": "/backend",
+      "destination": "/admin",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/admin",
