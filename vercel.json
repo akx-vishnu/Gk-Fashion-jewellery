@@ -46,7 +46,19 @@
       "destination": "/api/index.js"
     },
     {
+      "source": "/products/bulk-delete",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/products/removed",
+      "destination": "/api/index.js"
+    },
+    {
       "source": "/products/:id",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/products/:id/restore",
       "destination": "/api/index.js"
     },
     {
