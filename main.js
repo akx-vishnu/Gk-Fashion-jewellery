@@ -227,7 +227,7 @@ function filterByCategory(categoryValue) {
         filterProducts();
     } else {
         // On the home page (no filter element), redirect to the new-arrivals page
-        window.location.href = `new-arrivals.html?category=${encodeURIComponent(categoryValue)}`;
+        window.location.href = `new-arrivals?category=${encodeURIComponent(categoryValue)}`;
     }
 }
 

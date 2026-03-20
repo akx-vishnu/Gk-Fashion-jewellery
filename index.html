@@ -116,7 +116,7 @@
       "description": "Buy premium artificial jewellery online. Necklaces, earrings, bangles, bridal sets and more.",
       "potentialAction": {
         "@type": "SearchAction",
-        "target": "https://gk-fashion-jewellery.vercel.app/new-arrivals.html?q={search_term_string}",
+        "target": "https://gk-fashion-jewellery.vercel.app/new-arrivals?q={search_term_string}",
         "query-input": "required name=search_term_string"
       }
     }
@@ -131,13 +131,13 @@
       "description": "Browse all jewellery categories at GK Fashion Jewellery",
       "numberOfItems": 7,
       "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Necklace Jewellery", "url": "https://gk-fashion-jewellery.vercel.app/new-arrivals.html?category=Necklace" },
-        { "@type": "ListItem", "position": 2, "name": "Earrings Collection", "url": "https://gk-fashion-jewellery.vercel.app/new-arrivals.html?category=Earrings" },
-        { "@type": "ListItem", "position": 3, "name": "Rings & Finger Rings", "url": "https://gk-fashion-jewellery.vercel.app/new-arrivals.html?category=Ring" },
-        { "@type": "ListItem", "position": 4, "name": "Bangles & Bracelets", "url": "https://gk-fashion-jewellery.vercel.app/new-arrivals.html?category=Bangle" },
-        { "@type": "ListItem", "position": 5, "name": "Bridal Jewellery Collection", "url": "https://gk-fashion-jewellery.vercel.app/new-arrivals.html?category=Bridal+Collection" },
-        { "@type": "ListItem", "position": 6, "name": "Pendant with Earrings Set", "url": "https://gk-fashion-jewellery.vercel.app/new-arrivals.html?category=Pendant+with+Earrings" },
-        { "@type": "ListItem", "position": 7, "name": "Necklace & Earrings Set", "url": "https://gk-fashion-jewellery.vercel.app/new-arrivals.html?category=Necklace+with+Earrings" }
+        { "@type": "ListItem", "position": 1, "name": "Necklace Jewellery", "url": "https://gk-fashion-jewellery.vercel.app/new-arrivals?category=Necklace" },
+        { "@type": "ListItem", "position": 2, "name": "Earrings Collection", "url": "https://gk-fashion-jewellery.vercel.app/new-arrivals?category=Earrings" },
+        { "@type": "ListItem", "position": 3, "name": "Rings & Finger Rings", "url": "https://gk-fashion-jewellery.vercel.app/new-arrivals?category=Ring" },
+        { "@type": "ListItem", "position": 4, "name": "Bangles & Bracelets", "url": "https://gk-fashion-jewellery.vercel.app/new-arrivals?category=Bangle" },
+        { "@type": "ListItem", "position": 5, "name": "Bridal Jewellery Collection", "url": "https://gk-fashion-jewellery.vercel.app/new-arrivals?category=Bridal+Collection" },
+        { "@type": "ListItem", "position": 6, "name": "Pendant with Earrings Set", "url": "https://gk-fashion-jewellery.vercel.app/new-arrivals?category=Pendant+with+Earrings" },
+        { "@type": "ListItem", "position": 7, "name": "Necklace & Earrings Set", "url": "https://gk-fashion-jewellery.vercel.app/new-arrivals?category=Necklace+with+Earrings" }
       ]
     }
     </script>
@@ -156,7 +156,7 @@
             </a>
             <ul class="nav-links" id="nav-menu">
                 <li><a href="#categories" onclick="toggleMenu()">Collections</a></li>
-                <li><a href="new-arrivals.html" onclick="toggleMenu()">New Arrivals</a></li>
+                <li><a href="new-arrivals" onclick="toggleMenu()">New Arrivals</a></li>
                 <li><a href="#why-us" onclick="toggleMenu()">Why Us</a></li>
                 <li><a href="#contact" onclick="toggleMenu()">Contact</a></li>
             </ul>
@@ -198,7 +198,7 @@
         <div class="hero-content">
             <h1>Elegant Artificial Jewellery<br>for Every Occasion</h1>
             <p>Premium Necklaces, Earrings, Bangles & Bridal Sets | Shipped Across Kerala & Nationwide</p>
-            <a href="new-arrivals.html" class="btn" title="Explore our latest collections with shipping across Kerala">Shop
+            <a href="new-arrivals" class="btn" title="Explore our latest collections with shipping across Kerala">Shop
                 New Arrivals</a>
         </div>
     </section>
@@ -206,7 +206,7 @@
     <section id="categories" class="categories container">
         <h2 class="section-title">Our Jewellery Collections</h2>
         <div class="category-grid">
-            <a href="new-arrivals.html?category=Necklace" class="category-card" title="Shop Necklace Jewellery Online">
+            <a href="new-arrivals?category=Necklace" class="category-card" title="Shop Necklace Jewellery Online">
                 <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=600&q=80"
                     alt="Necklace Jewellery - Buy Artificial Necklaces Online at GK Fashion Jewellery" loading="lazy">
                 <div class="category-info">
@@ -214,7 +214,7 @@
                     <p>Elegant artificial necklaces for weddings, parties & daily wear.</p>
                 </div>
             </a>
-            <a href="new-arrivals.html?category=Earrings" class="category-card" title="Shop Earrings Collection Online">
+            <a href="new-arrivals?category=Earrings" class="category-card" title="Shop Earrings Collection Online">
                 <img src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=600&q=80"
                     alt="Earrings Collection - Buy Fashion Earrings Online at GK Fashion Jewellery" loading="lazy">
                 <div class="category-info">
@@ -222,7 +222,7 @@
                     <p>Studs, jhumkas, and drops in stunning designs.</p>
                 </div>
             </a>
-            <a href="new-arrivals.html?category=Ring" class="category-card" title="Shop Rings & Finger Rings Online">
+            <a href="new-arrivals?category=Ring" class="category-card" title="Shop Rings & Finger Rings Online">
                 <img src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=600&q=80"
                     alt="Rings & Finger Rings - Buy Artificial Rings Online at GK Fashion Jewellery" loading="lazy">
                 <div class="category-info">
@@ -230,7 +230,7 @@
                     <p>Statement rings and elegant finger rings for every occasion.</p>
                 </div>
             </a>
-            <a href="new-arrivals.html?category=Bangle" class="category-card" title="Shop Bangles & Bracelets Online">
+            <a href="new-arrivals?category=Bangle" class="category-card" title="Shop Bangles & Bracelets Online">
                 <img src="https://images.unsplash.com/photo-1573408301185-9146fe634ad0?auto=format&fit=crop&w=600&q=80"
                     alt="Bangles & Bracelets - Buy Artificial Bangles Online at GK Fashion Jewellery" loading="lazy">
                 <div class="category-info">
@@ -238,7 +238,7 @@
                     <p>Traditional and modern bangles crafted to perfection.</p>
                 </div>
             </a>
-            <a href="new-arrivals.html?category=Bridal+Collection" class="category-card" title="Shop Bridal Jewellery Collection">
+            <a href="new-arrivals?category=Bridal+Collection" class="category-card" title="Shop Bridal Jewellery Collection">
                 <img src="https://images.unsplash.com/photo-1596944924616-7b38e7cfac36?auto=format&fit=crop&w=600&q=80"
                     alt="Bridal Jewellery Collection - Buy Bridal Sets Online at GK Fashion Jewellery" loading="lazy">
                 <div class="category-info">
@@ -246,7 +246,7 @@
                     <p>Royal bridal sets designed for your most special day.</p>
                 </div>
             </a>
-            <a href="new-arrivals.html?category=Pendant+with+Earrings" class="category-card" title="Shop Pendant with Earrings Sets">
+            <a href="new-arrivals?category=Pendant+with+Earrings" class="category-card" title="Shop Pendant with Earrings Sets">
                 <img src="https://images.unsplash.com/photo-1735810918708-58b0935224eb?q=80&w=2070&auto=format&fit=crop"
                     alt="Pendant with Earrings Set - Buy Matching Jewellery Sets Online at GK Fashion Jewellery"
                     loading="lazy">
@@ -255,7 +255,7 @@
                     <p>Perfectly matched pendant and earrings combinations.</p>
                 </div>
             </a>
-            <a href="new-arrivals.html?category=Necklace+with+Earrings" class="category-card" title="Shop Necklace & Earrings Sets">
+            <a href="new-arrivals?category=Necklace+with+Earrings" class="category-card" title="Shop Necklace & Earrings Sets">
                 <img src="https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?auto=format&fit=crop&w=600&q=80"
                     alt="Necklace & Earrings Set - Buy Complete Jewellery Sets Online at GK Fashion Jewellery"
                     loading="lazy">

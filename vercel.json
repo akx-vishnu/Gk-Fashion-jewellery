@@ -59,12 +59,21 @@
       "source": "/backend",
       "destination": "/admin",
       "permanent": true
+    },
+    {
+      "source": "/new-arrivals.html",
+      "destination": "/new-arrivals",
+      "permanent": true
     }
   ],
   "rewrites": [
     {
       "source": "/admin",
       "destination": "/backend/index.html"
+    },
+    {
+      "source": "/new-arrivals",
+      "destination": "/new-arrivals.html"
     },
     {
       "source": "/products",
